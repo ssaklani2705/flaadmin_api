@@ -24,18 +24,15 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
-<<<<<<< HEAD
-@RequestMapping("/admin/data")
-=======
 @RequestMapping("/data")
 @CrossOrigin(origins = { "http://localhost:4200", "https://www.iba.org.in", "http://192.168.0.173:4200",
 		"http://192.168.0.100:4200", "http://192.168.0.100:8080" })
->>>>>>> 7d2139ca10beec755f29d485d19142e0885aa0c9
+
 public class DataController {
 
 	private final DataService dataService;
-	
-	@GetMapping("/getDataDetails")
+
+	@GetMapping("/list")
 	public Map<String, Object> findDataDetails(@RequestParam int page, @RequestParam int size,
 			@RequestParam int statusIndex, @RequestParam(defaultValue = "") String search) {
 		Page<DataInfoDTO> dataPage = dataService.findDataDetails(page, size, statusIndex, search);
