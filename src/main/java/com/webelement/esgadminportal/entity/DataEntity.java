@@ -1,23 +1,13 @@
-<<<<<<< HEAD
 
 package com.webelement.esgadminportal.entity;
 
-=======
-package com.webelement.esgadminportal.entity;
-
-
->>>>>>> fcc4096d4ccb153200a91a8f871c5615294f06be
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import javax.persistence.*;
-<<<<<<< HEAD
-
-=======
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
->>>>>>> fcc4096d4ccb153200a91a8f871c5615294f06be
 
 import lombok.Data;
 import lombok.NoArgsConstructor;

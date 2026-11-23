@@ -16,12 +16,12 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/data")
+@RequestMapping("/admin/data")
 public class DataController {
 
 	private final DataService dataService;
 
-	@PostMapping("/saveOrUpdate")
+	@PostMapping("/save-or-update")
 	public ApiResponse<DataEntity> saveOrUpdateData(@Valid @RequestBody DataEntity data,
 			HttpServletRequest httpRequest) {
 		ApiResponse<DataEntity> response = dataService.saveOrUpdateData(data, httpRequest);
