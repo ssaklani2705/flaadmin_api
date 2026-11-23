@@ -10,6 +10,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import com.webelement.esgadminportal.common.ApiResponse;
+import com.webelement.esgadminportal.common.DataDetailDTO;
 import com.webelement.esgadminportal.common.DataInfoDTO;
 import com.webelement.esgadminportal.entity.DataEntity;
 import com.webelement.esgadminportal.repo.DataRepo;
@@ -93,5 +94,9 @@ public class DataService {
 		String action = isNew ? "Data added successfully" : "Data updated successfully";
 
 		return new ApiResponse<>(true, action, saveEntity);
+	}
+
+	public DataDetailDTO findDataById(Integer id) {
+		return dataRepo.findById(id).map(DataDetailDTO::from).orElse(null);
 	}
 }
