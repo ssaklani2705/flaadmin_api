@@ -5,9 +5,12 @@ import java.time.LocalDateTime;
 import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import com.webelement.esgadminportal.common.ApiResponse;
+import com.webelement.esgadminportal.common.DataInfoDTO;
 import com.webelement.esgadminportal.entity.DataEntity;
 import com.webelement.esgadminportal.repo.DataRepo;
 
@@ -18,6 +21,10 @@ import lombok.RequiredArgsConstructor;
 public class DataService {
 
 	private final DataRepo dataRepo;
+	
+	public Page<DataInfoDTO> findDataDetails(int page, int size, int statusIndex, String search) {
+		return dataRepo.findDataDetails(PageRequest.of(page, size), statusIndex, search);
+	}
 
 	@Transactional
 	public ApiResponse<DataEntity> saveOrUpdateData(DataEntity data, HttpServletRequest httpRequest) {
