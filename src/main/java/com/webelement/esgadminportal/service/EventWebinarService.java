@@ -82,8 +82,6 @@ public class EventWebinarService {
 			}
 
 			int iType = "event".equalsIgnoreCase(type) ? 1 : 2;
-
-			// --- Duplicate title check ---
 			int existingCount = eventRepo.countByTitleActive(title.trim());
 			if (existingCount > 0) {
 				return ResponseEntity.badRequest()

@@ -51,6 +51,9 @@ public class KnowledgeEntity {
 
 	@Column(name = "i_addedby")
 	private Integer addedBy;
+	
+	@Column(name = "d_date")
+	private LocalDateTime knowledgedate;
 
 	public KnowledgeEntity() {
 		super();
@@ -187,6 +190,16 @@ public class KnowledgeEntity {
 
 	public void setAddedBy(Integer addedBy) {
 		this.addedBy = addedBy;
+	}
+	
+	
+
+	public LocalDateTime getKnowledgedate() {
+		return knowledgedate;
+	}
+
+	public void setKnowledgedate(LocalDateTime knowledgedate) {
+		this.knowledgedate = knowledgedate;
 	}
 
 	@Override

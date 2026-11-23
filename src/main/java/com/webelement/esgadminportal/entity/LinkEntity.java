@@ -46,13 +46,17 @@ public class LinkEntity {
 	@Column(name = "ts_moddate")
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
 	private Timestamp modDate;
+	
+	@Column(name = "i_sequence")
+	private Integer sequence;
 
-	public LinkEntity(Integer linkId, String name, String url, Short status) {
+	public LinkEntity(Integer linkId, String name, String url, Short status,Integer sequence) {
 		super();
 		this.linkId = linkId;
 		this.name = name;
 		this.url = url;
 		this.status = status;
+		this.sequence = sequence;
 	}
 
 	@Transient

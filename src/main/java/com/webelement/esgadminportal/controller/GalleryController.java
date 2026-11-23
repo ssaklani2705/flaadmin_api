@@ -62,6 +62,7 @@ public class GalleryController {
 			response.put("iStatus", gallery.getStatus());
 			response.put("tsRegDate", gallery.getRegDate());
 			response.put("tsModDate", gallery.getModDate());
+			response.put("groupId", gallery.getGroupId());
 			if (gallery.getType() == 1) { // Image
 				response.put("imageUrl", gallery.getFilename());
 			} else if (gallery.getType() == 2) { // Video
@@ -84,7 +85,7 @@ public class GalleryController {
 			@RequestParam(value = "file", required = false) MultipartFile file,
 			@RequestParam(value = "videoUrl", required = false) String videoUrl,
 			@RequestParam("sCaption") String sCaption, @RequestParam("iUserId") int iUserId,
-			@RequestParam("iType") int iType, HttpServletRequest httpRequest) {
+			@RequestParam("iType") int iType,@RequestParam("groupId") int groupId, HttpServletRequest httpRequest) {
 		try {
 			if (iType == 1) { // Image
 				if (file == null || file.isEmpty()) {
@@ -93,7 +94,7 @@ public class GalleryController {
 					return ResponseEntity.badRequest().body(response);
 				}
 				String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
-				galleryService.addImgOrVideo(fileName, sCaption, iUserId, file, iType, httpRequest);
+				galleryService.addImgOrVideo(fileName, sCaption, iUserId, file, iType,groupId, httpRequest);
 			} else if (iType == 2) { // Video
 				if (videoUrl == null || videoUrl.isEmpty()) {
 					Map<String, String> response = new HashMap<>();
@@ -101,7 +102,7 @@ public class GalleryController {
 					return ResponseEntity.badRequest().body(response);
 				}
 				// For video, we do not have file, so pass null for MultipartFile
-				galleryService.addImgOrVideo(videoUrl, sCaption, iUserId, null, iType, httpRequest);
+				galleryService.addImgOrVideo(videoUrl, sCaption, iUserId, null, iType,groupId, httpRequest);
 			} else {
 				Map<String, String> response = new HashMap<>();
 				response.put("message", "Invalid type");
@@ -128,11 +129,11 @@ public class GalleryController {
 			@RequestParam("sCaption") String sCaption, @RequestParam("iUserId") Integer iUserId,
 			@RequestParam(value = "file", required = false) MultipartFile file,
 			@RequestParam(value = "videoUrl", required = false) String videoUrl, @RequestParam("iType") Integer iType,
-			@RequestParam("iStatus") Integer iStatus, HttpServletRequest httpRequest) {
+			@RequestParam("iStatus") Integer iStatus,@RequestParam("groupId") int groupId, HttpServletRequest httpRequest) {
 		try {
 			System.out.println("iType : " + iType + " File : " + file);
 			boolean updated = galleryService.updateGalleryRecord(iGalleryId, sCaption, iUserId, file, videoUrl, iType,
-					iStatus, httpRequest);
+					iStatus,groupId, httpRequest);
 
 			if (!updated) {
 				Map<String, String> response = new HashMap<>();

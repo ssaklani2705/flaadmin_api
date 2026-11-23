@@ -55,7 +55,7 @@ public class KnowledgeSharingService {
 	}
 
 	public ResponseEntity<Map<String, String>> addKnowledgeSharing(String source, String title, MultipartFile file,
-			int iUserId, String sUsername, HttpServletRequest httpRequest) {
+			int iUserId, String sUsername,LocalDateTime knowledgedate, HttpServletRequest httpRequest) {
 		Map<String, String> response = new HashMap<>();
 
 		try {
@@ -107,11 +107,13 @@ public class KnowledgeSharingService {
 			knowledge.setBankApproval(1);
 			knowledge.setApproval(1);
 			knowledge.setStatus((short) 1);
+			
 
 			knowledge.setRegDate(LocalDateTime.now());
 			knowledge.setModDate(LocalDateTime.now());
 			knowledge.setSource(source);
 			knowledge.setAddedBy(-1);
+			knowledge.setKnowledgedate(knowledgedate);
 
 			// Save to the database
 			KnowledgeEntity knowledgeEntity = knowledgeRepo.save(knowledge);
@@ -258,7 +260,7 @@ public class KnowledgeSharingService {
 	}
 
 	public ResponseEntity<Map<String, String>> updateKnowledgeSharing(int knowledgeId, String source, String title,
-			MultipartFile file, int iUserId, String sUsername, int status, HttpServletRequest httpRequest) {
+			MultipartFile file, int iUserId, String sUsername, int status,LocalDateTime knowledgedate, HttpServletRequest httpRequest) {
 		Map<String, String> response = new HashMap<>();
 
 		try {
@@ -275,6 +277,7 @@ public class KnowledgeSharingService {
 			knowledge.setModDate(LocalDateTime.now());
 			knowledge.setUserId(iUserId);
 			knowledge.setStatus((short) status);
+			knowledge.setKnowledgedate(knowledgedate);
 
 			// Handle file if provided
 			if (file != null && !file.isEmpty()) {

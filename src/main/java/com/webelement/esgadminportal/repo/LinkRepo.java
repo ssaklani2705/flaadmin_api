@@ -13,16 +13,16 @@ import com.webelement.esgadminportal.entity.LinkEntity;
 
 public interface LinkRepo extends JpaRepository<LinkEntity, Integer> {
 
-	@Query("SELECT new com.webelement.esgadminportal.entity.LinkEntity(u.linkId,u.name,u.url,u.status) FROM LinkEntity u WHERE u.linkId > 0 AND  (:statusIndex = 0 OR u.status = :statusIndex)  "
+	@Query("SELECT new com.webelement.esgadminportal.entity.LinkEntity(u.linkId,u.name,u.url,u.status,u.sequence) FROM LinkEntity u WHERE u.linkId > 0 AND  (:statusIndex = 0 OR u.status = :statusIndex)  "
 			+ "AND (\r\n" + "            :search IS NULL OR :search = '' OR\r\n"
 			+ "            LOWER(u.name) LIKE LOWER(CONCAT('%', :search, '%')) \r\n"
-			+ "      )  ORDER BY u.status, u.name")
+			+ "      )  ORDER BY u.status, u.sequence, u.name")
 	Page<LinkEntity> findLinkDetails(Pageable pageable, @Param("statusIndex") int statusIndex, String search);
 
 	@Query(value = "SELECT DATE_FORMAT(t.ts_regdate, '%d-%m-%Y %h:%i %p') AS entryDate, REPLACE(CONCAT_WS(' ', u.s_firstname), '  ', ' ') AS name, t.s_action AS action, t.i_userid AS userId, t.s_flag AS flag FROM t_transaction t LEFT JOIN t_userlogin u ON u.i_userid = t.i_userid WHERE t.i_moduleid = :moduleId AND t.s_action NOT LIKE '%Log%' AND (:recordId IS NULL OR t.i_recordid = :recordId)", nativeQuery = true)
 	List<Object[]> getTransactionLogs(@Param("moduleId") int moduleId, @Param("recordId") Integer recordId);
 
-	@Query("SELECT new com.webelement.esgadminportal.entity.LinkEntity( " + "u.linkId, u.name, u.url,u.status) "
+	@Query("SELECT new com.webelement.esgadminportal.entity.LinkEntity( " + "u.linkId, u.name, u.url,u.status,u.sequence) "
 			+ "FROM LinkEntity u " + "WHERE u.linkId = :linkId")
 	LinkEntity getLinkById(@Param("linkId") int linkId);
 
