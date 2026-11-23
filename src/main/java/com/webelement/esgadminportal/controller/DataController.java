@@ -33,7 +33,7 @@ public class DataController {
 	private final DataService dataService;
 
 	@GetMapping("/list")
-	public Map<String, Object> findDataDetails(@RequestParam int page, @RequestParam int size,
+	public Map<String, Object> findDataDetails(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size,
 			@RequestParam int statusIndex, @RequestParam(defaultValue = "") String search) {
 		Page<DataInfoDTO> dataPage = dataService.findDataDetails(page, size, statusIndex, search);
 		Map<String, Object> response = new HashMap<>();
@@ -43,9 +43,9 @@ public class DataController {
 	}
 
 	@PostMapping("/save-or-update")
-	public ApiResponse<DataEntity> saveOrUpdateData(@Valid @RequestBody DataEntity data,
+	public ApiResponse<DataEntity> saveOrUpdateData(@Valid @RequestBody DataEntity request,
 			HttpServletRequest httpRequest) {
-		ApiResponse<DataEntity> response = dataService.saveOrUpdateData(data, httpRequest);
+		ApiResponse<DataEntity> response = dataService.saveOrUpdateData(request, httpRequest);
 
 		return response;
 	}
