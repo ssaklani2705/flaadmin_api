@@ -3,6 +3,8 @@ package com.webelement.esgadminportal.service;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -25,10 +27,11 @@ public class UserAccessLogService {
 	/**
 	 * Save login log
 	 */
-	public UserAccessLogEntity saveLogin(Integer userId, String username) {
+	public UserAccessLogEntity saveLogin(Integer userId, String username,HttpServletRequest request) {
 		UserAccessLogEntity log = new UserAccessLogEntity();
 		log.setUserId(userId);
-		log.setIpAddress(commonFunction.getLocalIp());
+//		log.setIpAddress(commonFunction.getLocalIp());
+		log.setIpAddress(commonFunction.resolveClientIp(request));
 		log.setLoginTime(LocalDateTime.now());
 		log.setStatus(0); // active session
 		log.setIbankUserId(-1);

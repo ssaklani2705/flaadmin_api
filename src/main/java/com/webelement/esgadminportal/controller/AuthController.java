@@ -20,12 +20,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.webelement.esgadminportal.common.ApiResponse;
 import com.webelement.esgadminportal.common.LoginRequest;
 import com.webelement.esgadminportal.common.LoginResponse;
+import com.webelement.esgadminportal.common.RefreshTokenResponse;
 import com.webelement.esgadminportal.common.ResponseApi;
 import com.webelement.esgadminportal.jwttoken.JwtUtil;
 import com.webelement.esgadminportal.service.AuthService;
+import com.webelement.esgadminportal.service.JwtService;
 import com.webelement.esgadminportal.service.TokenBlacklistService;
+//import com.webelement.prospurapi.common.ApiResponse;
+//import com.webelement.prospurapi.common.RefreshTokenResponse;
 
 @RestController
 @RequestMapping("/auth")
@@ -40,11 +45,14 @@ public class AuthController {
 
 	@Autowired
 	private JwtUtil jwtUtil;
+	
+	@Autowired
+	private JwtService jwtService;
 
 	@GetMapping("/test")
 	public String test() {
 
-		return "09-09-2025 10:24";
+		return "17-11-2025 10:15";
 	}
 
 	@GetMapping("/captcha")
@@ -76,78 +84,115 @@ public class AuthController {
 		}
 		return loginResponse;
 	}
-
+	
+	
 	@PostMapping("/refresh")
-	public ResponseEntity<?> refreshToken(HttpServletRequest request, HttpServletResponse response) {
-		Cookie[] cookies = request.getCookies();
-		if (cookies == null) {
-			Map<String, Object> body = new HashMap<>();
-			body.put("success", false);
-			body.put("message", "No refresh token found");
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(body);
-		}
-
-		String refreshToken = null;
-		for (Cookie cookie : cookies) {
-			if ("refreshToken".equals(cookie.getName())) {
-				refreshToken = cookie.getValue();
-			}
-		}
-
-		if (refreshToken == null) {
-			Map<String, Object> body = new HashMap<>();
-			body.put("success", false);
-			body.put("message", "Refresh token missing");
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(body);
-		}
-
+	public ApiResponse<RefreshTokenResponse> refreshToken(HttpServletRequest request) {
 		try {
-			if (jwtUtil.isTokenExpired(refreshToken)) {
-				Map<String, Object> body = new HashMap<>();
-				body.put("success", false);
-				body.put("message", "Refresh token expired");
-				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(body);
+			// 🔹 Extract old token from Authorization header
+			String oldToken = jwtService.extractTokenFromRequest(request);
+			if (oldToken == null) {
+				return new ApiResponse<>(false, "Authorization header missing", null);
 			}
 
-			String jti = jwtUtil.extractJti(refreshToken);
-			if (blacklistService.isBlacklisted(jti)) {
-				Map<String, Object> body = new HashMap<>();
-				body.put("success", false);
-				body.put("message", "Refresh token blacklisted");
-				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(body);
+			// 🔹 Validate old token
+			if (!jwtService.validateToken(oldToken)) {
+				return new ApiResponse<>(false, "Invalid or expired token", null);
 			}
 
-			String username = jwtUtil.extractUsername(refreshToken);
+			// ✅ Allow refresh even if expired — only verify signature
+			if (!jwtService.isTokenSignatureValid(oldToken)) {
+				return new ApiResponse<>(false, "Invalid token signature", null);
+			}
 
-			// Rotate refresh token
-			blacklistService.blacklistToken(jti); // old token invalid
-			String newRefreshToken = jwtUtil.generateRefreshToken(username);
+			// 🔹 Extract username (subject)
+			String username = jwtService.extractUsername(oldToken);
 
-			Cookie refreshCookie = new Cookie("refreshToken", newRefreshToken);
-			refreshCookie.setHttpOnly(true);
-			refreshCookie.setPath("/esgadminportal");
-			refreshCookie.setMaxAge(7 * 24 * 60 * 60);
-			response.addCookie(refreshCookie);
+			// 🔹 Generate new JWT
+			String newToken = jwtUtil.generateAccessToken(username);
 
-			// Generate new access token
-			String newAccessToken = jwtUtil.generateAccessToken(username);
-
-			Map<String, Object> tokens = new HashMap<>();
-			tokens.put("accessToken", newAccessToken);
-
-			Map<String, Object> body = new HashMap<>();
-			body.put("success", true);
-			body.put("data", tokens);
-
-			return ResponseEntity.ok(body);
+			// 🔹 Return refreshed token
+			RefreshTokenResponse data = new RefreshTokenResponse(newToken);
+			return new ApiResponse<>(true, "Token refreshed successfully", data);
 
 		} catch (Exception e) {
-			Map<String, Object> body = new HashMap<>();
-			body.put("success", false);
-			body.put("message", "Invalid refresh token");
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(body);
+			e.printStackTrace();
+			return new ApiResponse<>(false, "Token refresh failed", null);
 		}
 	}
+
+
+//	@PostMapping("/refresh")
+//	public ResponseEntity<?> refreshToken(HttpServletRequest request, HttpServletResponse response) {
+//		Cookie[] cookies = request.getCookies();
+//		if (cookies == null) {
+//			Map<String, Object> body = new HashMap<>();
+//			body.put("success", false);
+//			body.put("message", "No refresh token found");
+//			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(body);
+//		}
+//
+//		String refreshToken = null;
+//		for (Cookie cookie : cookies) {
+//			if ("refreshToken".equals(cookie.getName())) {
+//				refreshToken = cookie.getValue();
+//			}
+//		}
+//
+//		if (refreshToken == null) {
+//			Map<String, Object> body = new HashMap<>();
+//			body.put("success", false);
+//			body.put("message", "Refresh token missing");
+//			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(body);
+//		}
+//
+//		try {
+//			if (jwtUtil.isTokenExpired(refreshToken)) {
+//				Map<String, Object> body = new HashMap<>();
+//				body.put("success", false);
+//				body.put("message", "Refresh token expired");
+//				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(body);
+//			}
+//
+//			String jti = jwtUtil.extractJti(refreshToken);
+//			if (blacklistService.isBlacklisted(jti)) {
+//				Map<String, Object> body = new HashMap<>();
+//				body.put("success", false);
+//				body.put("message", "Refresh token blacklisted");
+//				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(body);
+//			}
+//
+//			String username = jwtUtil.extractUsername(refreshToken);
+//
+//			// Rotate refresh token
+//			blacklistService.blacklistToken(jti); // old token invalid
+//			String newRefreshToken = jwtUtil.generateRefreshToken(username);
+//
+//			Cookie refreshCookie = new Cookie("refreshToken", newRefreshToken);
+//			refreshCookie.setHttpOnly(true);
+//			refreshCookie.setPath("/esgadminportal");
+//			refreshCookie.setMaxAge(7 * 24 * 60 * 60);
+//			response.addCookie(refreshCookie);
+//
+//			// Generate new access token
+//			String newAccessToken = jwtUtil.generateAccessToken(username);
+//
+//			Map<String, Object> tokens = new HashMap<>();
+//			tokens.put("accessToken", newAccessToken);
+//
+//			Map<String, Object> body = new HashMap<>();
+//			body.put("success", true);
+//			body.put("data", tokens);
+//
+//			return ResponseEntity.ok(body);
+//
+//		} catch (Exception e) {
+//			Map<String, Object> body = new HashMap<>();
+//			body.put("success", false);
+//			body.put("message", "Invalid refresh token");
+//			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(body);
+//		}
+//	}
 
 	@PostMapping("/forgotpasswordMail")
 	public ResponseEntity<ResponseApi<String>> forgotpasswordMail(@RequestParam String emailId,

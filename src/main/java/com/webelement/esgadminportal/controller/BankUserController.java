@@ -1,6 +1,7 @@
 package com.webelement.esgadminportal.controller;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
@@ -63,6 +64,9 @@ public class BankUserController {
 		return bankUserService.deleteBankUser(bankUser.getBankUserId(), bankUser.getUserId(), httpRequest);
 	}
 	
-
+	@GetMapping("/getBankUsersByBankId")
+	public ResponseEntity<List<UserInfoDTO>> getBankUsersByBankId(@RequestParam int bankId) {
+		return ResponseEntity.ok(bankUserService.getUsersByBankId(bankId));
+	}
 
 }

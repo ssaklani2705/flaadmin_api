@@ -15,7 +15,7 @@ public interface KnowledgeRepo extends JpaRepository<KnowledgeEntity, Integer> {
 
 	@Query("SELECT new com.webelement.esgadminportal.common.KnowledgeDTO("
 			+ "k.knowledge, k.bankId, k.name, k.filename, k.bankApproval, k.approval, "
-			+ "k.userId, k.bankUserId, k.regDate, k.modDate, k.username, "
+			+ "k.userId, k.bankUserId, k.knowledgedate as regDate, k.modDate, k.username, "
 			+ "COALESCE(b.name, 'IBA'),k.source,k.status,k.addedBy,COALESCE(b.name, 'IBA') as addedByName) " + // <- Add
 																												// bank
 																												// name
@@ -25,14 +25,14 @@ public interface KnowledgeRepo extends JpaRepository<KnowledgeEntity, Integer> {
 			"WHERE (:statusIndex = 0 OR k.status = :statusIndex) " + "AND (" + "  :search IS NULL OR :search = '' OR "
 			+ "  LOWER(k.name) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
 //		       "  FUNCTION('TO_CHAR', k.regDate, 'DD-MM-YYYY') LIKE CONCAT('%', :search, '%')" +
-			"  FUNCTION('DATE_FORMAT', k.regDate, '%d-%m-%Y') LIKE CONCAT('%', :search, '%') " + ") "
+			"  FUNCTION('DATE_FORMAT', k.knowledgedate, '%d-%m-%Y') LIKE CONCAT('%', :search, '%') " + ") "
 			+ "ORDER BY k.status, k.regDate DESC")
 	Page<KnowledgeDTO> findKnowledgeDetails(Pageable pageable, @Param("statusIndex") int statusIndex,
 			@Param("search") String search);
 
 	@Query("SELECT new com.webelement.esgadminportal.common.KnowledgeDTO("
 			+ "k.knowledge, k.bankId, k.name, k.filename, k.bankApproval, k.approval, "
-			+ "k.userId, k.bankUserId, k.regDate, k.modDate, k.username, "
+			+ "k.userId, k.bankUserId,k.knowledgedate as regDate, k.modDate, k.username, "
 			+ "COALESCE(b.name, 'IBA'),k.source,k.status,k.addedBy,COALESCE(b.name, 'IBA') as addedByName) " + // <- Add
 																												// bank
 																												// name

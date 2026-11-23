@@ -272,4 +272,7 @@ public class BankUserService {
 		}
 	}
 
+	public List<UserInfoDTO> getUsersByBankId(int bankId) {
+		return bankUserRepo.findUsersByBankId(bankId);
+	}
 }

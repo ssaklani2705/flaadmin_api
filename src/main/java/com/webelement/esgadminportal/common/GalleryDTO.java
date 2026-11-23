@@ -17,5 +17,6 @@ public class GalleryDTO {
 	private Integer status;
 	private Integer type;
 	private LocalDateTime regDate;
+	private String name;
 
 }

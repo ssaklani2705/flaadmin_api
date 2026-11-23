@@ -110,7 +110,7 @@ System.out.println("serverCaptcha : "+serverCaptcha);
 						b = true;
 					}
 					List<ModulePermissionDTO> modules = getModuleListByName(userId, b);
-					UserAccessLogEntity accessLogEntity = accessLogService.saveLogin(userId, info.getFirstName());
+					UserAccessLogEntity accessLogEntity = accessLogService.saveLogin(userId, info.getFirstName(),httpRequest);
 					LoginResponse loginResponse = new LoginResponse(token, userId, info.getFirstName(),
 							accessLogEntity.getLogId(), modules);
 					session.removeAttribute("captcha");

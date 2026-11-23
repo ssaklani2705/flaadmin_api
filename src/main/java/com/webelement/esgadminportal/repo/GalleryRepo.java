@@ -14,9 +14,9 @@ import com.webelement.esgadminportal.entity.GalleryEntity;
 public interface GalleryRepo extends JpaRepository<GalleryEntity, Integer> {
 
 	@Query("SELECT new com.webelement.esgadminportal.common.GalleryDTO("
-			+ "g.galleryId, g.caption, g.filename, g.status, g.type, g.regDate) " + "FROM GalleryEntity g "
+			+ "g.galleryId, g.caption, g.filename, g.status, g.type, g.regDate,gr.name) " + "FROM GalleryEntity g left join GroupEntity gr on g.groupId=gr.groupId "
 			+ "WHERE g.galleryId > 0 " + "AND (:statusIndex = 0 OR g.status = :statusIndex) " + "AND ("
-			+ "  :search IS NULL OR :search = '' OR " + "  LOWER(g.caption) LIKE LOWER(CONCAT('%', :search, '%')) OR "
+			+ "  :search IS NULL OR :search = '' OR " + "  LOWER(g.caption) LIKE LOWER(CONCAT('%', :search, '%')) OR LOWER(gr.name) LIKE LOWER(CONCAT('%', :search, '%')) OR "
 			+ "  (" + "    LOWER(:search) = 'image' AND g.type = 1" + "  ) OR ("
 			+ "    LOWER(:search) = 'video' AND g.type = 2" + "  )" + ") " + "ORDER BY g.status, g.regDate desc")
 	Page<GalleryDTO> getAllGalleries(Pageable pageable, @Param("statusIndex") int statusIndex,

@@ -1,6 +1,7 @@
 package com.webelement.esgadminportal.controller;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -9,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -46,8 +48,9 @@ public class KnowledgeSharingController {
 	public ResponseEntity<Map<String, String>> addKnowledgeSharing(@RequestParam("title") String title,
 			@RequestParam("source") String source, @RequestParam("file") MultipartFile file,
 			@RequestParam("iUserId") int iUserId, @RequestParam("sUsername") String sUsername,
+			@RequestParam("knowledgedata") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime knowledgedate,
 			HttpServletRequest httpRequest) {
-		return knowledgeSharingService.addKnowledgeSharing(source, title, file, iUserId, sUsername, httpRequest);
+		return knowledgeSharingService.addKnowledgeSharing(source, title, file, iUserId, sUsername,knowledgedate, httpRequest);
 	}
 
 	@PostMapping("/updateKnowledgeSharing")
@@ -55,10 +58,11 @@ public class KnowledgeSharingController {
 			@RequestParam("title") String title, @RequestParam("source") String source,
 			@RequestParam(value = "file", required = false) MultipartFile file, @RequestParam("iUserId") int iUserId,
 			@RequestParam("sUsername") String sUsername, @RequestParam("status") int status,
+			@RequestParam("knowledgedata") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime knowledgedate,
 			HttpServletRequest httpRequest) {
 
 		return knowledgeSharingService.updateKnowledgeSharing(knowledgeId, source, title, file, iUserId, sUsername,
-				status, httpRequest);
+				status, knowledgedate, httpRequest);
 	}
 
 	@GetMapping("/getKnowledgeSharing/{knowledgeId}")

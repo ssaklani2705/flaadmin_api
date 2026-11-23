@@ -40,5 +40,8 @@ public class GalleryEntity {
 
     @Column(name = "ts_moddate")
     private LocalDateTime modDate;
+    
+    @Column(name = "i_groupid")
+    private Integer groupId;
 
 }

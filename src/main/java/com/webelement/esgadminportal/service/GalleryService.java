@@ -76,7 +76,7 @@ public class GalleryService {
 	}
 
 	public ResponseEntity<ApiResponse<String>> addImgOrVideo(String fileNameOrVideoUrl, String sCaption, int iUserId,
-			MultipartFile file, int iType, HttpServletRequest httpRequest) throws IOException {
+			MultipartFile file, int iType,int groupId, HttpServletRequest httpRequest) throws IOException {
 
 		LocalDateTime now = LocalDateTime.now();
 		String relativePath = null;
@@ -93,13 +93,13 @@ public class GalleryService {
 			if (contentType == null || !validTypes.contains(contentType.toLowerCase())) {
 				return ResponseEntity.badRequest()
 						.body(new ApiResponse<>(false, "Only JPG, PNG, and JPEG images are allowed.", null));
-			}
+			} 
 
 			// File size validation (5 MB max)
-			long maxSize = 5 * 1024 * 1024;
+			long maxSize = 6 * 1024 * 1024;
 			if (file.getSize() > maxSize) {
 				return ResponseEntity.badRequest()
-						.body(new ApiResponse<>(false, "File size exceeds 5 MB limit.", null));
+						.body(new ApiResponse<>(false, "File size exceeds 6 MB limit.", null));
 			}
 		} else if (iType == 2) { // Video URL
 			if (fileNameOrVideoUrl == null || fileNameOrVideoUrl.isEmpty()) {
@@ -118,6 +118,7 @@ public class GalleryService {
 		galleryEntity.setModDate(now);
 		galleryEntity.setRegDate(now);
 		galleryEntity.setFilename(null);
+		galleryEntity.setGroupId(groupId);
 
 		galleryEntity = galleryRepo.save(galleryEntity);
 		Integer uid = galleryEntity.getGalleryId();
@@ -170,7 +171,7 @@ public class GalleryService {
 	}
 
 	public boolean updateGalleryRecord(Integer iGalleryId, String sCaption, Integer iUserId, MultipartFile file,
-			String videoUrl, Integer iType, Integer iStatus, HttpServletRequest httpRequest) throws IOException {
+			String videoUrl, Integer iType, Integer iStatus,Integer groupId, HttpServletRequest httpRequest) throws IOException {
 		Optional<GalleryEntity> optionalEntity = galleryRepo.findById(iGalleryId);
 
 		if (!optionalEntity.isPresent()) {
@@ -182,7 +183,7 @@ public class GalleryService {
 		entity.setUserId(iUserId);
 		entity.setModDate(LocalDateTime.now());
 		entity.setStatus(iStatus);
-		;
+		entity.setGroupId(groupId);
 
 		// ✅ Handle Image update
 		if (iType == 1 && file != null && !file.isEmpty()) {
