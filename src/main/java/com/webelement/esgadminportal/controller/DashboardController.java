@@ -23,12 +23,12 @@ public class DashboardController {
 	
 	private final DashboardService dashboardService;
 	
-	@GetMapping({"/status-count","/status-count/{bankId}"})
+	@GetMapping({ "/status-count", "/status-count/{bankId}" })
 	public ResponseEntity<Map<String, Object>> getStatusCount(@PathVariable(required = false) Integer bankId) {
 
-	    if (bankId == null) {
-	        bankId = 0;
-	    }
+		if (bankId == null) {
+			bankId = 0;
+		}
 		Map<String, Object> response = dashboardService.getStatusCount(bankId);
 		return ResponseEntity.ok(response);
 	}
