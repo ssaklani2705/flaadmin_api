@@ -3,6 +3,8 @@ package com.webelement.esgadminportal.repo;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+
 import javax.transaction.Transactional;
 
 import org.springframework.data.domain.Page;
@@ -60,4 +62,34 @@ public interface BankUserRepo extends JpaRepository<BankUserEntity, Integer> {
 			+ "FROM BankUserEntity u LEFT JOIN BankEntity b ON u.bankId = b.bankId "
 			+ "WHERE u.bankId = :bankId AND u.status <> 3 ORDER BY u.status, u.name")
 	List<UserInfoDTO> findUsersByBankId(@Param("bankId") int bankId);
+	
+	//for Bank updateForgotPassword
+	
+	@Transactional
+	 @Modifying
+	 @Query("UPDATE BankUserEntity u " +
+	        "SET u.password = :password, " +
+	        "    u.sentLinkDate = :linksentdate, " +
+	        "    u.modDate = CURRENT_TIMESTAMP " +
+	        "WHERE u.bankUserId = :userId")
+	 int updateForgotPassword(@Param("userId") Integer userId,
+	                          @Param("password") String password,
+	                          @Param("linksentdate") Timestamp linksentdate);
+	
+	 @Query("SELECT u.bankUserId FROM BankUserEntity u WHERE u.email = :email AND u.status = :status")
+	  Optional<Integer> findUserIdByEmailAndStatus(@Param("email") String email, @Param("status") Short status);
+	 
+	 @Query("SELECT u FROM BankUserEntity u WHERE u.email = :email AND u.status NOT IN (2, 3)")
+		Optional<BankUserEntity> findByEmailExcludeStatuses(@Param("email") String email);
+
+	 @Query("SELECT u.bankUserId FROM BankUserEntity u " +
+	           "WHERE u.email = :email " +
+	           "AND u.bankUserId = :userId " +
+	           "AND u.status = 1 " +
+	           "AND u.sentLinkDate > CURRENT_TIMESTAMP")
+	    Optional<Integer> checkURLValidity(
+	            @Param("email") String email,
+	            @Param("userId") Integer userId
+	    );
+	
 }

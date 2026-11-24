@@ -24,6 +24,9 @@ public class JwtUtil {
 
 	@Value("${jwt.refreshExpiration}")
 	private long refreshTokenExpiration; // in ms (e.g., 604800000 = 7 days)
+	
+	 @Value("${jwt.expiration}")
+	 private long jwtExpirationMillis;
 
 	private final TokenBlacklistService tokenBlacklistService;
 
@@ -91,4 +94,22 @@ public class JwtUtil {
 		return Jwts.builder().setId(jti).setSubject(username).setIssuedAt(now).setExpiration(expiryDate)
 				.signWith(SignatureAlgorithm.HS512, secretKey).compact();
 	}
+	
+	 public String generateToken(String username) {
+   	  String jti = UUID.randomUUID().toString();
+   	  Date now = new Date();
+   	  Date expiryDate = new Date(now.getTime() + jwtExpirationMillis);
+       return Jwts.builder()
+//               .setSubject(username)
+//               .setIssuedAt(new Date(System.currentTimeMillis()))
+//               .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10)) // 10 hours
+//               .signWith(SignatureAlgorithm.HS256, secretKey)
+//               .compact();
+       		 .setId(jti) // store token ID
+       		 .setSubject(username)
+                .setIssuedAt(now)
+                .setExpiration(expiryDate)
+                .signWith(SignatureAlgorithm.HS512, secretKey) // your secret key
+                .compact();
+   }
 }
