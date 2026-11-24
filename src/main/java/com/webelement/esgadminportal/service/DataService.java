@@ -13,6 +13,7 @@ import com.webelement.esgadminportal.common.ApiResponse;
 import com.webelement.esgadminportal.common.DataDetailDTO;
 import com.webelement.esgadminportal.common.DataInfoDTO;
 import com.webelement.esgadminportal.entity.DataEntity;
+import com.webelement.esgadminportal.repo.BankUserRepo;
 import com.webelement.esgadminportal.repo.DataRepo;
 
 import lombok.RequiredArgsConstructor;
@@ -22,9 +23,14 @@ import lombok.RequiredArgsConstructor;
 public class DataService {
 
 	private final DataRepo dataRepo;
+	private final BankUserRepo bankUserRepo;
 	
-	public Page<DataInfoDTO> findDataDetails(int page, int size, int statusIndex, String search) {
-		return dataRepo.findDataDetails(PageRequest.of(page, size), statusIndex, search);
+	public Page<DataInfoDTO> findDataDetails(int page, int size, int statusIndex, String search,int userId) {
+		System.out.println("userId : "+userId);
+		Integer bankId = bankUserRepo.findBankIdByBankUserId(userId);
+		System.out.println("bankId : "+bankId);
+		
+		return dataRepo.findDataDetails(PageRequest.of(page, size), statusIndex, search,bankId);
 	}
 
 	@Transactional
