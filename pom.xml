@@ -9,11 +9,11 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.webelement</groupId>
-	<artifactId>esgadminportal</artifactId>
+	<artifactId>flaadmin</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>war</packaging>
-	<name>esgadminportal</name>
-	<description>esgadminportal project for Spring Boot</description>
+	<name>flaadmin</name>
+	<description>flaadmin project for Spring Boot</description>
 	<url/>
 	<licenses>
 		<license/>
@@ -141,7 +141,7 @@
 
 	<build>
 	<!-- Control output WAR name -->
-        <finalName>esgadminportal</finalName>
+        <finalName>flaadmin</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
