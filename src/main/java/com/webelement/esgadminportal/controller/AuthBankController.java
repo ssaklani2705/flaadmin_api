@@ -30,7 +30,7 @@ import com.webelement.esgadminportal.service.AuthBankService;
 @RestController
 @RequestMapping("/authuser")
 //@CrossOrigin(value = "*")
-@CrossOrigin(origins = {"http://localhost:4300","https://www.iba.org.in","http://192.168.0.173:4200"})
+@CrossOrigin(origins = {"http://localhost:4200","https://www.iba.org.in","http://192.168.0.173:4200"})
 public class AuthBankController {
 	
 	@Autowired

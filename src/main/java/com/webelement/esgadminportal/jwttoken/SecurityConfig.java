@@ -23,6 +23,7 @@ public class SecurityConfig {
             .authorizeRequests()
                 .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()  // Allow preflight
                 .antMatchers("/auth/**").permitAll()               // Login & Refresh token
+                .antMatchers("/authuser/**").permitAll()   
                 .anyRequest().authenticated()                      // Protect all other APIs
             .and()
             .sessionManagement()
