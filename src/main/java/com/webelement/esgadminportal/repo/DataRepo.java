@@ -31,19 +31,17 @@ public interface DataRepo extends JpaRepository<DataEntity, Integer> {
 			@Param("search") String search,@Param("bankId") int bankId);
 
 	@EntityGraph(attributePaths = { "bank" })
-	@Query(value = "SELECT d FROM DataEntity d LEFT JOIN d.bank b "
+	@Query(value = "SELECT d FROM DataEntity d "
 	        + "WHERE d.id > 0 AND (:statusIndex = 0 OR d.status = :statusIndex) "
+	        + "AND (:bankId = 0 OR d.bankId = :bankId) "
 	        + "AND (:search IS NULL OR :search = '' OR "
 	        + "     LOWER(d.code) LIKE LOWER(CONCAT('%', :search, '%')) OR "
 	        + "     LOWER(d.state) LIKE LOWER(CONCAT('%', :search, '%')) OR "
 	        + "     LOWER(d.catOfBranch) LIKE LOWER(CONCAT('%', :search, '%')) OR "
 	        + "     LOWER(d.statusOfPerpetrator) LIKE LOWER(CONCAT('%', :search, '%')) OR "
-	        + "     LOWER(d.typeOfFraud) LIKE LOWER(CONCAT('%', :search, '%')) OR "
-	        + "     LOWER(b.name) LIKE LOWER(CONCAT('%', :search, '%'))) "
+	        + "     LOWER(d.typeOfFraud) LIKE LOWER(CONCAT('%', :search, '%'))) "
 	        + "ORDER BY d.id DESC")
-	Page<DataEntity> findDataDetails(Pageable pageable,
-	                                 @Param("statusIndex") int statusIndex,
-	                                 @Param("search") String search);
+	Page<DataEntity> dataAdminIndexList(Pageable pageable,@Param("statusIndex") int statusIndex,@Param("search") String search,@Param("bankId") int bankId);
 
 	@Query("SELECT d.status, COUNT(d) " + "FROM DataEntity d " + "WHERE d.bankId = :bankId OR :bankId = 0 "
 			+ "GROUP BY d.status " + "ORDER BY d.status")

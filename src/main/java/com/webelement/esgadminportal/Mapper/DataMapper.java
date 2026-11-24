@@ -6,7 +6,6 @@ import org.springframework.stereotype.Component;
 import com.webelement.esgadminportal.common.DataInfoDTO;
 import com.webelement.esgadminportal.entity.DataEntity;
 
-@Component
 public interface DataMapper {
 	public DataInfoDTO toInfoDto(DataEntity d);
 

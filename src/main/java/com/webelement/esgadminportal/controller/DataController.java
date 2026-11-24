@@ -38,8 +38,20 @@ public class DataController {
 	@GetMapping("/list")
 	public Map<String, Object> findDataDetails(@RequestParam(defaultValue = "0") int page,
 			@RequestParam(defaultValue = "10") int size, @RequestParam int statusIndex,
-			@RequestParam(defaultValue = "") String search,@RequestParam int userId) {
-		Page<DataInfoDTO> dataPage = dataService.findDataDetails(page, size, statusIndex, search,userId);
+			@RequestParam(defaultValue = "") String search, @RequestParam int userId) {
+		Page<DataInfoDTO> dataPage = dataService.findDataDetails(page, size, statusIndex, search, userId);
+
+		Map<String, Object> response = new HashMap<>();
+		response.put("data", dataPage.getContent());
+		response.put("totalElements", dataPage.getTotalElements());
+		return response;
+	}
+
+	@GetMapping("/admin-data-index")
+	public Map<String, Object> adminDataList(@RequestParam(defaultValue = "0") int page,
+			@RequestParam(defaultValue = "10") int size, @RequestParam(defaultValue = "0") int statusIndex,
+			@RequestParam(defaultValue = "") String search,@RequestParam(defaultValue = "0") int bankId) {
+		Page<DataInfoDTO> dataPage = dataService.adminDataListService(page, size, statusIndex, search,bankId);
 
 		Map<String, Object> response = new HashMap<>();
 		response.put("data", dataPage.getContent());

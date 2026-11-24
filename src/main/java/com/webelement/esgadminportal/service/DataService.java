@@ -40,6 +40,11 @@ public class DataService {
 //		return dataRepo.findDataDetails(PageRequest.of(page, size), statusIndex, search);
 //	}
 	
+	 public Page<DataInfoDTO> adminDataListService(int page, int size, int statusIndex, String search,int bankId) {
+	        return dataMapper.toInfoDtoPage(
+	            dataRepo.dataAdminIndexList(PageRequest.of(page, size), statusIndex, search,bankId));
+	    }
+	
 	
 
 	@Transactional

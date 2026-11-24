@@ -59,7 +59,7 @@ public class BankController {
 		return ResponseEntity.ok(bankService.getAllActiveBankTypes());
 	}
 
-	@GetMapping("/getAllBank")
+	@GetMapping("/all-bank-list")
 	public ResponseEntity<List<BankInfoDTO>> getAllBank() {
 		return ResponseEntity.ok(bankService.getAllActiveBank());
 	}
@@ -94,7 +94,5 @@ public class BankController {
 			throws Exception {
 		return bankService.deleteBank(bank.getBankId(), bank.getUserId(), httpRequest);
 	}
-	
-	
 
 }
