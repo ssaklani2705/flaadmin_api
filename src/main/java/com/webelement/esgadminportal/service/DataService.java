@@ -7,6 +7,8 @@ import javax.transaction.Transactional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.webelement.esgadminportal.Mapper.DataMapper;
@@ -50,6 +52,10 @@ public class DataService {
 	@Transactional
 	public ApiResponse<DataEntity> saveOrUpdateData(DataEntity data, HttpServletRequest httpRequest) {
 
+		if (data.getAddedBy() == null) {
+		    throw new RuntimeException("User id is required");
+		}
+		
 		boolean isNew = (data.getId() == null || data.getId() == 0);
 
 		DataEntity entity;
@@ -102,6 +108,7 @@ public class DataService {
 		entity.setAmountWrittenOff(data.getAmountWrittenOff());
 		entity.setCompromiseSettlement(data.getCompromiseSettlement());
 		entity.setCompromiseAmount(data.getCompromiseAmount());
+		entity.setAddedBy(data.getAddedBy());   // updated on every Save/Submit, not at approval
 
 		if (isNew) {
 			entity.setStatus(1);
@@ -115,6 +122,8 @@ public class DataService {
 
 		return new ApiResponse<>(true, action, saveEntity);
 	}
+	
+	
 
 	public DataDetailDTO findDataById(Integer id) {
 		return dataRepo.findById(id).map(DataDetailDTO::from).orElse(null);
