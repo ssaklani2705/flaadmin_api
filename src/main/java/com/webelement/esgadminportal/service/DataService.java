@@ -24,8 +24,9 @@ import lombok.RequiredArgsConstructor;
 public class DataService {
 
 	private final DataRepo dataRepo;
-<<<<<<< HEAD
+
 	private final BankUserRepo bankUserRepo;
+	private final DataMapper dataMapper;
 	
 	public Page<DataInfoDTO> findDataDetails(int page, int size, int statusIndex, String search,int userId) {
 		System.out.println("userId : "+userId);
@@ -33,17 +34,13 @@ public class DataService {
 		System.out.println("bankId : "+bankId);
 		
 		return dataRepo.findDataDetails(PageRequest.of(page, size), statusIndex, search,bankId);
-=======
-	private final DataMapper dataMapper;
+	}
 
 //	public Page<DataInfoDTO> findDataDetails(int page, int size, int statusIndex, String search) {
 //		return dataRepo.findDataDetails(PageRequest.of(page, size), statusIndex, search);
 //	}
 	
-	public Page<DataInfoDTO> findDataDetails(int page, int size, int statusIndex, String search) {
-		return dataMapper.toInfoDtoPage(dataRepo.findDataDetails(PageRequest.of(page, size), statusIndex, search));
->>>>>>> 4957b560445d3c658928d4c6cd544f41c0daef83
-	}
+	
 
 	@Transactional
 	public ApiResponse<DataEntity> saveOrUpdateData(DataEntity data, HttpServletRequest httpRequest) {

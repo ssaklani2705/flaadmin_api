@@ -37,15 +37,10 @@ public class DataController {
 
 	@GetMapping("/list")
 	public Map<String, Object> findDataDetails(@RequestParam(defaultValue = "0") int page,
-<<<<<<< HEAD
 			@RequestParam(defaultValue = "10") int size, @RequestParam int statusIndex,
 			@RequestParam(defaultValue = "") String search,@RequestParam int userId) {
 		Page<DataInfoDTO> dataPage = dataService.findDataDetails(page, size, statusIndex, search,userId);
-=======
-			@RequestParam(defaultValue = "10") int size, @RequestParam(defaultValue = "0") int statusIndex,
-			@RequestParam(defaultValue = "") String search) {
-		Page<DataInfoDTO> dataPage = dataService.findDataDetails(page, size, statusIndex, search);
->>>>>>> 4957b560445d3c658928d4c6cd544f41c0daef83
+
 		Map<String, Object> response = new HashMap<>();
 		response.put("data", dataPage.getContent());
 		response.put("totalElements", dataPage.getTotalElements());
