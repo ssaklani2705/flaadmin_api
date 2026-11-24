@@ -37,7 +37,7 @@ public class DataController {
 
 	@GetMapping("/list")
 	public Map<String, Object> findDataDetails(@RequestParam(defaultValue = "0") int page,
-			@RequestParam(defaultValue = "10") int size, @RequestParam int statusIndex,
+			@RequestParam(defaultValue = "10") int size, @RequestParam(defaultValue = "0") int statusIndex,
 			@RequestParam(defaultValue = "") String search) {
 		Page<DataInfoDTO> dataPage = dataService.findDataDetails(page, size, statusIndex, search);
 		Map<String, Object> response = new HashMap<>();
@@ -52,7 +52,7 @@ public class DataController {
 		ApiResponse<DataEntity> response = dataService.saveOrUpdateData(request, httpRequest);
 		return response;
 	}
-	
+
 	@GetMapping("/getDataById/{id}")
 	public Map<String, Object> getDataById(@PathVariable Integer id) {
 		Map<String, Object> response = new HashMap<>();

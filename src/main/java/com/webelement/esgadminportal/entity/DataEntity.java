@@ -178,4 +178,8 @@ public class DataEntity {
 
 	@Column(name = "ts_moddate", insertable = false, updatable = false)
 	private LocalDateTime modDate;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "i_bankid", referencedColumnName = "i_bankid", insertable = false, updatable = false)
+	private BankEntity bank;
 }
