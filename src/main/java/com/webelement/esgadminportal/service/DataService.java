@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import com.webelement.esgadminportal.Mapper.DataMapper;
 import com.webelement.esgadminportal.common.ApiResponse;
 import com.webelement.esgadminportal.common.DataDetailDTO;
 import com.webelement.esgadminportal.common.DataInfoDTO;
@@ -23,6 +24,7 @@ import lombok.RequiredArgsConstructor;
 public class DataService {
 
 	private final DataRepo dataRepo;
+<<<<<<< HEAD
 	private final BankUserRepo bankUserRepo;
 	
 	public Page<DataInfoDTO> findDataDetails(int page, int size, int statusIndex, String search,int userId) {
@@ -31,6 +33,16 @@ public class DataService {
 		System.out.println("bankId : "+bankId);
 		
 		return dataRepo.findDataDetails(PageRequest.of(page, size), statusIndex, search,bankId);
+=======
+	private final DataMapper dataMapper;
+
+//	public Page<DataInfoDTO> findDataDetails(int page, int size, int statusIndex, String search) {
+//		return dataRepo.findDataDetails(PageRequest.of(page, size), statusIndex, search);
+//	}
+	
+	public Page<DataInfoDTO> findDataDetails(int page, int size, int statusIndex, String search) {
+		return dataMapper.toInfoDtoPage(dataRepo.findDataDetails(PageRequest.of(page, size), statusIndex, search));
+>>>>>>> 4957b560445d3c658928d4c6cd544f41c0daef83
 	}
 
 	@Transactional
