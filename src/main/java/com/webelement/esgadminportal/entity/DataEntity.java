@@ -9,6 +9,8 @@ import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
@@ -172,6 +174,9 @@ public class DataEntity {
 
 	@Column(name = "i_bankid")
 	private Integer bankId;
+	
+	@Column(name = "i_addedby")
+	private Integer addedBy;
 
 	@Column(name = "ts_regdate", insertable = false, updatable = false)
 	private LocalDateTime regDate;
@@ -180,6 +185,7 @@ public class DataEntity {
 	private LocalDateTime modDate;
 
 	@ManyToOne(fetch = FetchType.LAZY)
+	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 	@JoinColumn(name = "i_bankid", referencedColumnName = "i_bankid", insertable = false, updatable = false)
 	private BankEntity bank;
 }
