@@ -138,7 +138,7 @@ System.out.println("serverCaptcha : "+serverCaptcha);
 				message = "Your Password is incorrect. Please enter correct Password.";
 				break;
 			case 4:
-				message = "Your Email ID is not registered. Please contact to IBAESG Team.";
+				message = "Your Email ID is not registered. Please contact to FLA Admin Team.";
 				break;
 			default:
 				message = "Invalid username or password.";

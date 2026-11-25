@@ -2,9 +2,13 @@ package com.webelement.esgadminportal.common;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
+
+import javax.persistence.Transient;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.webelement.esgadminportal.entity.DataEntity;
+import com.webelement.esgadminportal.entity.TransactionEntity;
 
 import lombok.Data;
 
@@ -56,6 +60,9 @@ public class DataDetailDTO {
 	@JsonSerialize(using = IndianAmountSerializer.class)
 	private BigDecimal compromiseAmount;
 	private Integer status;
+	
+	@Transient
+	 List<TransactionEntity> history;
 
 	public static DataDetailDTO from(DataEntity e) {
 		DataDetailDTO d = new DataDetailDTO();
