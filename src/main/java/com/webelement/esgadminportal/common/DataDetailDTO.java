@@ -2,8 +2,12 @@ package com.webelement.esgadminportal.common;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
+
+import javax.persistence.Transient;
 
 import com.webelement.esgadminportal.entity.DataEntity;
+import com.webelement.esgadminportal.entity.TransactionEntity;
 
 import lombok.Data;
 
@@ -49,6 +53,9 @@ public class DataDetailDTO {
 	private String compromiseDone;
 	private BigDecimal compromiseAmount;
 	private Integer status;
+	
+	@Transient
+	 List<TransactionEntity> history;
 
 	public static DataDetailDTO from(DataEntity e) {
 		DataDetailDTO d = new DataDetailDTO();

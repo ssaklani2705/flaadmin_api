@@ -188,4 +188,6 @@ public class DataEntity {
 	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 	@JoinColumn(name = "i_bankid", referencedColumnName = "i_bankid", insertable = false, updatable = false)
 	private BankEntity bank;
+	
+	
 }

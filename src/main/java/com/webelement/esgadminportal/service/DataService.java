@@ -1,7 +1,9 @@
 package com.webelement.esgadminportal.service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
@@ -15,9 +17,11 @@ import org.springframework.stereotype.Service;
 
 import com.webelement.esgadminportal.Mapper.DataMapper;
 import com.webelement.esgadminportal.common.ApiResponse;
+import com.webelement.esgadminportal.common.CommonFunction;
 import com.webelement.esgadminportal.common.DataDetailDTO;
 import com.webelement.esgadminportal.common.DataInfoDTO;
 import com.webelement.esgadminportal.entity.DataEntity;
+import com.webelement.esgadminportal.entity.TransactionEntity;
 import com.webelement.esgadminportal.repo.BankUserRepo;
 import com.webelement.esgadminportal.repo.DataRepo;
 
@@ -31,6 +35,8 @@ public class DataService {
 
 	private final BankUserRepo bankUserRepo;
 	private final DataMapper dataMapper;
+	
+	private final CommonFunction commonFunction;
 	
 	public Page<DataInfoDTO> findDataDetails(int page, int size, int statusIndex, String search,int userId) {
 		System.out.println("userId : "+userId);
@@ -138,7 +144,7 @@ public class DataService {
 
 	
 	 @Transactional
-	    public DataEntity saveDataAdmin(DataEntity request) {
+	    public DataEntity saveDataAdmin(DataEntity request,HttpServletRequest httpRequest) {
 
 	        if (request == null) {
 	            throw new IllegalArgumentException("Request data is required");
@@ -194,7 +200,24 @@ public class DataService {
 	        entity.setStatus(status);
 
 	        // Save null fields as null.
-	        return dataRepo.save(entity);
+//	        return dataRepo.save(entity);
+	        DataEntity savedData = dataRepo.save(entity);
+	        
+//	        System.out.println("Data saved successfully. ID: " + savedData.getId());
+	        
+	     // Save history after successful insert/update
+	        commonFunction.createHistoryAccess(
+	                entity.getAddedBy(),
+	                commonFunction.resolveClientIp(httpRequest),
+	                commonFunction.getLocalIp(),
+	                entity.getId() == null ? "Data Added" : "Data Updated",
+	                2,
+	                savedData.getId(),
+	                entity.getAddedBy()
+	        );
+
+	        return savedData;
+
 	    }
 
 	    private void validateSubmitData(DataEntity data) {
@@ -217,4 +240,7 @@ public class DataService {
 	            throw new IllegalArgumentException("Detection Date is required");
 	        }
 	    }
+	    
+	    
+	    
 }
