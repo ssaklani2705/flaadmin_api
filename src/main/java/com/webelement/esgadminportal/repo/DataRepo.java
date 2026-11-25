@@ -19,7 +19,7 @@ public interface DataRepo extends JpaRepository<DataEntity, Integer> {
 	@Query("SELECT new com.webelement.esgadminportal.common.DataInfoDTO("
 			+ "d.id, d.code, d.state, d.catOfBranch, d.statusOfPerpetrator, d.typeOfAccount, d.secOfAcc, "
 			+ "d.areaOfOperation, d.typeOfFraud, d.totalAmount, d.occurrence, d.detection, d.classification, "
-			+ "d.reportedToRbi, d.detectionMethod, d.status) " + "FROM DataEntity d "
+			+ "d.reportedToRbi, d.detectionMethod, d.status,d.addedBy) " + "FROM DataEntity d "
 			+ "WHERE d.id > 0 AND d.bankId = :bankId AND (:statusIndex = 0 OR d.status = :statusIndex) "
 			+ "AND (:search IS NULL OR :search = '' OR "
 			+ "     LOWER(d.code) LIKE LOWER(CONCAT('%', :search, '%')) OR "

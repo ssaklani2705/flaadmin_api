@@ -30,13 +30,14 @@ public class DataInfoDTO {
 	private LocalDate dateReportedToRbi;
 	private String howDetected;
 	private Integer status;
+	private Integer addedBy;
 	
 	private String bankName;
 
 	public DataInfoDTO(Integer dataId, String entityCode, String state, String branchCategory, String perpetratorStatus,
 			String accountType, String industrySector, String areaOfOperation, String fraudType, BigDecimal totalAmount,
 			LocalDate dateOfOccurrence, LocalDate dateOfDetection, LocalDate dateOfClassification,
-			LocalDate dateReportedToRbi, String howDetected, Integer status) {
+			LocalDate dateReportedToRbi, String howDetected, Integer status,Integer addedBy) {
 		this.dataId = dataId;
 		this.entityCode = entityCode;
 		this.state = state;
@@ -53,6 +54,7 @@ public class DataInfoDTO {
 		this.dateReportedToRbi = dateReportedToRbi;
 		this.howDetected = howDetected;
 		this.status = status;
+		this.addedBy = addedBy;
 	}
 	
 	
