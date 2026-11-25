@@ -67,10 +67,39 @@ public class DataService {
 	    }
 	
 	 @Transactional
-	    public boolean approveData(Integer dataId) {
+	    public boolean approveData(Integer dataId, Integer userId, HttpServletRequest httpRequest) {
 	        int updatedRows = dataRepo.approveData(dataId);
+	        
+	        if (updatedRows > 0) {
+		         commonFunction.createHistoryAccess(
+		                 userId,
+		                 commonFunction.resolveClientIp(httpRequest),
+		                 commonFunction.getLocalIp(),
+		                 "Data Approved",
+		                 2,
+		                 dataId,
+		                 userId);
+		     }
 	        return updatedRows > 0;
 	    }
+	 
+	 
+	 @Transactional
+	 public boolean softDeleteData(Integer dataId, Integer userId, HttpServletRequest httpRequest) {
+	     int updatedRows = dataRepo.softDeleteData(dataId);
+
+	     if (updatedRows > 0) {
+	         commonFunction.createHistoryAccess(
+	                 userId,
+	                 commonFunction.resolveClientIp(httpRequest),
+	                 commonFunction.getLocalIp(),
+	                 "Data Deleted",
+	                 2,
+	                 dataId,
+	                 userId);
+	     }
+	     return updatedRows > 0;
+	 }
 
 	@Transactional
 	public ApiResponse<DataEntity> saveOrUpdateData(DataEntity data, HttpServletRequest httpRequest) {
@@ -221,7 +250,7 @@ public class DataService {
 	                entity.getAddedBy(),
 	                commonFunction.resolveClientIp(httpRequest),
 	                commonFunction.getLocalIp(),
-	                entity.getId() == null ? "Data Added" : "Data Updated",
+	                request.getId() == null ? "Data Added" : "Data Updated",
 	                2,
 	                savedData.getId(),
 	                entity.getAddedBy()

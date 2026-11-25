@@ -72,6 +72,11 @@ public interface DataRepo extends JpaRepository<DataEntity, Integer> {
 	    @Transactional
 	    @Query("UPDATE DataEntity d SET d.status = 3 WHERE d.id = :dataId AND d.status = 2")
 	    int approveData(@Param("dataId") Integer dataId);
+	 
+	 @Modifying
+	 @Transactional
+	 @Query("UPDATE DataEntity d SET d.status = 4 WHERE d.id = :dataId AND d.status IN (1, 2)")
+	 int softDeleteData(@Param("dataId") Integer dataId);
 
 	@Query("SELECT new com.webelement.esgadminportal.common.DataInfoDTO("
 			+ "d.id, d.code, d.state, d.catOfBranch, d.statusOfPerpetrator, d.typeOfAccount, d.secOfAcc, "

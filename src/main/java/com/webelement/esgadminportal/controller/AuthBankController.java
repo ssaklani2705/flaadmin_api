@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.webelement.esgadminportal.common.ChangePasswordDTO;
 import com.webelement.esgadminportal.common.LoginBankResponse;
 import com.webelement.esgadminportal.common.LoginRequest;
 import com.webelement.esgadminportal.common.LoginResponse;
@@ -120,4 +121,11 @@ public class AuthBankController {
         return authService.forgotpassword(emailId, userId,password);
     }
 	
+	@PostMapping("/change_password")
+	public ResponseEntity<ResponseApi<String>> changePassword(@RequestBody ChangePasswordDTO request) {
+		String message = authService.changePassword(request);
+
+		return ResponseEntity.ok(new ResponseApi<String>(true, message, null));
+	}
+
 }

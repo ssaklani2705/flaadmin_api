@@ -16,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import com.webelement.esgadminportal.common.ChangePasswordDTO;
 import com.webelement.esgadminportal.common.CommonFunction;
 import com.webelement.esgadminportal.common.LoginBankResponse;
 import com.webelement.esgadminportal.common.LoginRequest;
@@ -27,6 +28,7 @@ import com.webelement.esgadminportal.entity.BankUserEntity;
 import com.webelement.esgadminportal.entity.MailLogEntity;
 import com.webelement.esgadminportal.entity.SmtpEntity;
 import com.webelement.esgadminportal.entity.UserAccessLogEntity;
+import com.webelement.esgadminportal.exception.PasswordValidationException;
 import com.webelement.esgadminportal.jwttoken.JwtUtil;
 import com.webelement.esgadminportal.repo.BankRepo;
 import com.webelement.esgadminportal.repo.BankUserRepo;
@@ -58,6 +60,9 @@ public class AuthBankService {
 	UserAccessLogService accessLogService;
 	@Autowired
 	MailService mailService;
+	
+	@Autowired
+	private PasswordService passwordService;
 	
 	@Autowired
 	SmtpRepo smtpRepo;
@@ -395,5 +400,87 @@ public class AuthBankService {
 	                .checkURLValidity(email, userId)
 	                .orElse(0);
 	    }
+
+
+
+	 @Transactional
+		public String changePassword(ChangePasswordDTO request) {
+
+			validateChangePasswordRequest(request);
+
+//			AppUser me = CurrentUser.get();
+//
+//			System.out.println("========== CHANGE PASSWORD DEBUG ==========");
+//			System.out.println("Authenticated username: " + me.getUsername());
+//			System.out.println("Authenticated user ID: " + me.getUserId());
+
+			String oldPassword;
+			String newPassword;
+			String userId;
+
+			try {
+				oldPassword = commonFunction.decipher(request.getOldPassword());
+				newPassword = commonFunction.decipher(request.getNewPassword());
+				userId = commonFunction.decipher(request.getUserId());
+			} catch (Exception e) {
+				throw new PasswordValidationException("Invalid encrypted request data.", e);
+			}
+
+			System.out.println("Request password decrypted successfully: true");
+
+			String stored = bankUserRepo.findPasswordByBankUserId(Integer.parseInt(userId));
+
+			System.out.println("Stored password found: " + (stored != null));
+			System.out.println("Stored password format: "
+					+ (stored == null ? "NULL" : passwordService.isHashed(stored) ? "BCrypt" : "Legacy"));
+
+			boolean passwordMatches = passwordService.matches(oldPassword, stored);
+
+			System.out.println("Old password matches: " + passwordMatches);
+			System.out.println("===========================================");
+
+			validateNewPassword(oldPassword, newPassword);
+
+			if (!passwordMatches) {
+				throw new PasswordValidationException("Old password is incorrect.");
+			}
+
+			int rows = bankUserRepo.updateForgotPassword(Integer.parseInt(userId), request.getNewPassword(), null);
+
+			if (rows != 1) {
+				throw new IllegalStateException("Password update failed. Please try again.");
+			}
+
+			return "Password changed successfully.";
+		}
+
+		private void validateChangePasswordRequest(ChangePasswordDTO request) {
+			if (request == null) {
+				throw new PasswordValidationException("Request cannot be null.");
+			}
+			if (isBlank(request.getUsername())) {
+				throw new PasswordValidationException("Email ID is required.");
+			}
+			if (isBlank(request.getOldPassword())) {
+				throw new PasswordValidationException("Old password is required.");
+			}
+			if (isBlank(request.getNewPassword())) {
+				throw new PasswordValidationException("New password is required.");
+			}
+		}
+
+		private boolean isBlank(String value) {
+			return value == null || value.trim().isEmpty();
+		}
+
+		private void validateNewPassword(String oldPassword, String newPassword) {
+			if (newPassword.length() < 8) {
+				throw new PasswordValidationException("New password must contain at least 8 characters.");
+			}
+			if (oldPassword.equals(newPassword)) {
+				throw new PasswordValidationException("New password must be different from the old password.");
+			}
+		}
+
 	 
 }

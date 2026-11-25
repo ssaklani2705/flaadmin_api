@@ -89,17 +89,36 @@ public ResponseEntity<Map<String, Object>> uploadDataExcel(
 	}
 	
 	@PostMapping("/approve/{dataId}")
-	public Map<String, Object> approveData(@PathVariable Integer dataId) {
+	public Map<String, Object> approveData(@PathVariable Integer dataId,@RequestParam(value = "userId", required = false) Integer userId,
+            HttpServletRequest httpRequest) {
 
 	    Map<String, Object> response = new HashMap<>();
 
-	    boolean approved = dataService.approveData(dataId);
+	    boolean approved = dataService.approveData(dataId,userId, httpRequest);
 
 	    response.put("data", approved);
 	    response.put("totalElements", approved ? 1 : 0);
 	    response.put("message", approved
 	            ? "Record approved successfully"
 	            : "Record not found or already processed");
+
+	    return response;
+	}
+	
+	@PostMapping("/delete/{dataId}")
+	public Map<String, Object> deleteData(@PathVariable Integer dataId,
+	                                      @RequestParam(value = "userId", required = false) Integer userId,
+	                                      HttpServletRequest httpRequest) {
+
+	    Map<String, Object> response = new HashMap<>();
+
+	    boolean deleted = dataService.softDeleteData(dataId, userId, httpRequest);
+
+	    response.put("data", deleted);
+	    response.put("totalElements", deleted ? 1 : 0);
+	    response.put("message", deleted
+	            ? "Record deleted successfully"
+	            : "Record not found or cannot be deleted");
 
 	    return response;
 	}
