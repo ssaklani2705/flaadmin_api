@@ -43,6 +43,9 @@ public class DataController {
 	private final DataService dataService;
 	
 	private final DataRepo dataRepo;
+	
+	
+
 
 	@GetMapping("/list")
 	public Map<String, Object> findDataDetails(@RequestParam(defaultValue = "0") int page,
