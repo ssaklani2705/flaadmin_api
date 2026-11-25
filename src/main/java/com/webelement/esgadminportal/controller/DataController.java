@@ -44,13 +44,9 @@ public class DataController {
 	private final DataService dataService;
 	
 	private final DataRepo dataRepo;
-<<<<<<< HEAD
-	private final UserTransactionRepo transactionRepo;
-=======
-	
-	
 
->>>>>>> 3cb2c732549167b3cc2ae2622f9a196c2a758e37
+	private final UserTransactionRepo transactionRepo;
+
 
 	@GetMapping("/list")
 	public Map<String, Object> findDataDetails(@RequestParam(defaultValue = "0") int page,
