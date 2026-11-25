@@ -95,5 +95,8 @@ public interface BankUserRepo extends JpaRepository<BankUserEntity, Integer> {
 	
 	 @Query("SELECT b.bankId FROM BankUserEntity b WHERE b.bankUserId = :bankUserId")
 	 Integer findBankIdByBankUserId(@Param("bankUserId") int bankUserId);
+	 
+	 @Query(value = "SELECT s_password FROM t_bankuser WHERE i_bankuserid = :bankUserId", nativeQuery = true)
+		String findPasswordByBankUserId(@Param("bankUserId") Integer bankUserId);
 	
 }

@@ -31,7 +31,6 @@ public class DataDetailDTO {
 	private String classificationOther;
 	private String fraudType;
 	private String fraudTypeOther;
-	@JsonSerialize(using = IndianAmountSerializer.class)
 	private BigDecimal totalAmount;
 	private LocalDate dateOfOccurrence;
 	private LocalDate dateOfDetection;
@@ -48,16 +47,11 @@ public class DataDetailDTO {
 	private String actionTaken;
 	private String leaComplaint;
 	private String stepsTaken;
-	@JsonSerialize(using = IndianAmountSerializer.class)
 	private BigDecimal amountRecovered;
-	@JsonSerialize(using = IndianAmountSerializer.class)
 	private BigDecimal lossToBank;
-	@JsonSerialize(using = IndianAmountSerializer.class)
 	private BigDecimal provisionHeld;
-	@JsonSerialize(using = IndianAmountSerializer.class)
 	private BigDecimal amountWrittenOff;
 	private String compromiseDone;
-	@JsonSerialize(using = IndianAmountSerializer.class)
 	private BigDecimal compromiseAmount;
 	private Integer status;
 	

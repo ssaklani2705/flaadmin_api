@@ -1,8 +1,14 @@
 package com.webelement.esgadminportal.service;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
@@ -14,16 +20,20 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.webelement.esgadminportal.Mapper.DataMapper;
 import com.webelement.esgadminportal.common.ApiResponse;
 import com.webelement.esgadminportal.common.CommonFunction;
 import com.webelement.esgadminportal.common.DataDetailDTO;
+import com.webelement.esgadminportal.common.DataExcelParser;
 import com.webelement.esgadminportal.common.DataInfoDTO;
 import com.webelement.esgadminportal.entity.DataEntity;
+import com.webelement.esgadminportal.entity.StateEntity;
 import com.webelement.esgadminportal.entity.TransactionEntity;
 import com.webelement.esgadminportal.repo.BankUserRepo;
 import com.webelement.esgadminportal.repo.DataRepo;
+import com.webelement.esgadminportal.repo.StateRepo;
 
 import lombok.RequiredArgsConstructor;
 
@@ -35,6 +45,7 @@ public class DataService {
 
 	private final BankUserRepo bankUserRepo;
 	private final DataMapper dataMapper;
+	private final StateRepo stateRepo;
 	
 	private final CommonFunction commonFunction;
 	
@@ -56,10 +67,39 @@ public class DataService {
 	    }
 	
 	 @Transactional
-	    public boolean approveData(Integer dataId) {
+	    public boolean approveData(Integer dataId, Integer userId, HttpServletRequest httpRequest) {
 	        int updatedRows = dataRepo.approveData(dataId);
+	        
+	        if (updatedRows > 0) {
+		         commonFunction.createHistoryAccess(
+		                 userId,
+		                 commonFunction.resolveClientIp(httpRequest),
+		                 commonFunction.getLocalIp(),
+		                 "Data Approved",
+		                 2,
+		                 dataId,
+		                 userId);
+		     }
 	        return updatedRows > 0;
 	    }
+	 
+	 
+	 @Transactional
+	 public boolean softDeleteData(Integer dataId, Integer userId, HttpServletRequest httpRequest) {
+	     int updatedRows = dataRepo.softDeleteData(dataId);
+
+	     if (updatedRows > 0) {
+	         commonFunction.createHistoryAccess(
+	                 userId,
+	                 commonFunction.resolveClientIp(httpRequest),
+	                 commonFunction.getLocalIp(),
+	                 "Data Deleted",
+	                 2,
+	                 dataId,
+	                 userId);
+	     }
+	     return updatedRows > 0;
+	 }
 
 	@Transactional
 	public ApiResponse<DataEntity> saveOrUpdateData(DataEntity data, HttpServletRequest httpRequest) {
@@ -210,7 +250,7 @@ public class DataService {
 	                entity.getAddedBy(),
 	                commonFunction.resolveClientIp(httpRequest),
 	                commonFunction.getLocalIp(),
-	                entity.getId() == null ? "Data Added" : "Data Updated",
+	                request.getId() == null ? "Data Added" : "Data Updated",
 	                2,
 	                savedData.getId(),
 	                entity.getAddedBy()
@@ -240,6 +280,72 @@ public class DataService {
 	            throw new IllegalArgumentException("Detection Date is required");
 	        }
 	    }
+
+	    
+
+		private static final long EXCEL_MAX_SIZE = 5L * 1024 * 1024; // 5 MB
+		private static final int STATUS_DRAFT = 1;
+
+
+@Transactional
+public Map<String, Object> uploadDataExcel(MultipartFile file, Integer addedBy, Integer bankId,
+                                           HttpServletRequest httpRequest) {
+
+    if (file == null || file.isEmpty()) {
+        throw new IllegalArgumentException("Please select an Excel file");
+    }
+    String fileName = file.getOriginalFilename();
+    if (fileName == null || !fileName.toLowerCase().endsWith(".xlsx")) {
+        throw new IllegalArgumentException("Only .xlsx files are allowed");
+    }
+    if (file.getSize() > EXCEL_MAX_SIZE) {
+        throw new IllegalArgumentException("File size must not exceed 5 MB");
+    }
+
+    // TODO: use your own state repository / entity here (the same source as getAllStates()).
+    Set<String> stateNames = stateRepo.findAll().stream()
+            .map(StateEntity::getName)
+            .collect(Collectors.toSet());
+
+    DataExcelParser.ParseResult result;
+    try (InputStream in = file.getInputStream()) {
+        // Rows are saved as Draft so the user can review and Submit from the Edit page.
+        result = DataExcelParser.parse(in, stateNames, STATUS_DRAFT, addedBy, bankId);
+    } catch (IOException | RuntimeException e) {
+        e.printStackTrace();   // or log.error("Unable to parse uploaded Excel", e);
+        throw new IllegalArgumentException(
+                "Unable to read the file. Please upload a valid .xlsx file based on the template");
+    }
+
+    Map<String, Object> response = new LinkedHashMap<>();
+    response.put("totalRows", result.getTotalRows());
+
+    // All-or-nothing: if any row is invalid, nothing is saved.
+    if (result.hasErrors()) {
+        response.put("success", false);
+        response.put("message", "Validation failed. No records were saved. Fix the errors and upload again.");
+        response.put("savedRows", 0);
+        response.put("errorCount", result.getErrorCount());
+        response.put("errors", result.getErrors());
+        return response;
+    }
+
+    List<DataEntity> saved = dataRepo.saveAll(result.getEntities());
+
+    String clientIp = commonFunction.resolveClientIp(httpRequest);
+    String localIp = commonFunction.getLocalIp();
+    for (DataEntity d : saved) {
+        commonFunction.createHistoryAccess(addedBy, clientIp, localIp,
+                "Data Added (Excel Upload)", 2, d.getId(), addedBy);
+    }
+
+    response.put("success", true);
+    response.put("message", saved.size() + " record(s) uploaded successfully as Draft");
+    response.put("savedRows", saved.size());
+    response.put("errorCount", 0);
+    response.put("errors", Collections.emptyList());
+    return response;
+}
 	    
 	    
 	    
