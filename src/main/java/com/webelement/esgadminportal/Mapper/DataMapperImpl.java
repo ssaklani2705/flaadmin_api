@@ -17,7 +17,9 @@ public class DataMapperImpl implements DataMapper {
 		}
 		return DataInfoDTO.builder().dataId(d.getId()).entityCode(d.getCode()).state(d.getState())
 				.branchCategory(d.getCatOfBranch()).perpetratorStatus(d.getStatusOfPerpetrator())
-				.accountType(d.getTypeOfAccount()).areaOfOperation(d.getAreaOfOperation()).fraudType(d.getTypeOfFraud())
+				.accountType(d.getTypeOfAccount())
+				.accountTypeOther(d.getTypeOfAccOther())
+				.areaOfOperation(d.getAreaOfOperation()).fraudType(d.getTypeOfFraud())
 				.totalAmount(d.getTotalAmount()).dateOfOccurrence(d.getOccurrence()).dateOfDetection(d.getDetection())
 				.dateOfClassification(d.getClassification()).dateReportedToRbi(d.getReportedToRbi())
 				.howDetected(d.getDetectionMethod()).status(d.getStatus())

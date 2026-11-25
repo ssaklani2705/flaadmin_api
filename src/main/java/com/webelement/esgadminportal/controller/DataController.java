@@ -28,6 +28,7 @@ import com.webelement.esgadminportal.common.DataInfoDTO;
 import com.webelement.esgadminportal.entity.DataEntity;
 import com.webelement.esgadminportal.entity.TransactionEntity;
 import com.webelement.esgadminportal.repo.DataRepo;
+import com.webelement.esgadminportal.repo.UserTransactionRepo;
 import com.webelement.esgadminportal.service.DataService;
 
 import lombok.RequiredArgsConstructor;
@@ -43,6 +44,7 @@ public class DataController {
 	private final DataService dataService;
 	
 	private final DataRepo dataRepo;
+	private final UserTransactionRepo transactionRepo;
 
 	@GetMapping("/list")
 	public Map<String, Object> findDataDetails(@RequestParam(defaultValue = "0") int page,
@@ -151,7 +153,7 @@ public class DataController {
 	}
 	
 	public List<TransactionEntity> getTransactionLogs(int moduleId, Integer recordId) {
-		List<Object[]> results = dataRepo.getTransactionLogs(moduleId, recordId);
+		List<Object[]> results = transactionRepo.getTransactionLogs2(moduleId, recordId);
 		System.out.println("results : " + results);
 		return results.stream().map(obj -> {
 			TransactionEntity dto = new TransactionEntity();
