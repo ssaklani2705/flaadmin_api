@@ -8,10 +8,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.springframework.data.domain.Page;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -45,6 +47,22 @@ public class DataController {
 		response.put("data", dataPage.getContent());
 		response.put("totalElements", dataPage.getTotalElements());
 		return response;
+	}
+	
+	@PostMapping("/approve/{dataId}")
+	public Map<String, Object> approveData(@PathVariable Integer dataId) {
+
+	    Map<String, Object> response = new HashMap<>();
+
+	    boolean approved = dataService.approveData(dataId);
+
+	    response.put("data", approved);
+	    response.put("totalElements", approved ? 1 : 0);
+	    response.put("message", approved
+	            ? "Record approved successfully"
+	            : "Record not found or already processed");
+
+	    return response;
 	}
 
 	@GetMapping("/admin-data-index")
@@ -82,4 +100,6 @@ public class DataController {
 		response.put("history", new ArrayList<>()); // TODO: fill from an action-history table
 		return response;
 	}
+	
+	
 }

@@ -2,10 +2,13 @@ package com.webelement.esgadminportal.repo;
 
 import java.util.List;
 
+import javax.transaction.Transactional;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -15,6 +18,11 @@ import com.webelement.esgadminportal.entity.DataEntity;
 
 @Repository
 public interface DataRepo extends JpaRepository<DataEntity, Integer> {
+	
+	 @Modifying
+	    @Transactional
+	    @Query("UPDATE DataEntity d SET d.status = 3 WHERE d.id = :dataId AND d.status = 2")
+	    int approveData(@Param("dataId") Integer dataId);
 
 	@Query("SELECT new com.webelement.esgadminportal.common.DataInfoDTO("
 			+ "d.id, d.code, d.state, d.catOfBranch, d.statusOfPerpetrator, d.typeOfAccount, d.secOfAcc, "

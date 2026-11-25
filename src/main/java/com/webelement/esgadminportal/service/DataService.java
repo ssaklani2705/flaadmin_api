@@ -47,7 +47,11 @@ public class DataService {
 	            dataRepo.dataAdminIndexList(PageRequest.of(page, size), statusIndex, search,bankId));
 	    }
 	
-	
+	 @Transactional
+	    public boolean approveData(Integer dataId) {
+	        int updatedRows = dataRepo.approveData(dataId);
+	        return updatedRows > 0;
+	    }
 
 	@Transactional
 	public ApiResponse<DataEntity> saveOrUpdateData(DataEntity data, HttpServletRequest httpRequest) {
@@ -109,6 +113,7 @@ public class DataService {
 		entity.setCompromiseSettlement(data.getCompromiseSettlement());
 		entity.setCompromiseAmount(data.getCompromiseAmount());
 		entity.setAddedBy(data.getAddedBy());   // updated on every Save/Submit, not at approval
+		entity.setBankId(data.getBankId());
 
 		if (isNew) {
 			entity.setStatus(1);
