@@ -1,10 +1,12 @@
 package com.webelement.esgadminportal.service;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.Authentication;
@@ -133,4 +135,86 @@ public class DataService {
 	public DataDetailDTO findDataById(Integer id) {
 		return dataRepo.findById(id).map(DataDetailDTO::from).orElse(null);
 	}
+
+	
+	 @Transactional
+	    public DataEntity saveDataAdmin(DataEntity request) {
+
+	        if (request == null) {
+	            throw new IllegalArgumentException("Request data is required");
+	        }
+
+	        Integer status = request.getStatus() == null
+	                ? 1
+	                : request.getStatus();
+
+	        if (!Objects.equals(status, 1) && !Objects.equals(status, 2)) {
+	            throw new IllegalArgumentException("Invalid data status");
+	        }
+
+	        // Validate only when submitting
+	        if (status == 2) {
+	            validateSubmitData(request);
+	        }
+
+	        DataEntity entity;
+
+	        // EDIT
+	        if (request.getId() != null) {
+
+	            entity = dataRepo.findById(request.getId())
+	                    .orElseThrow(() ->
+	                            new IllegalArgumentException("Data record not found"));
+
+	            // Copy all form fields, preserving system-managed fields.
+	            BeanUtils.copyProperties(
+	                    request,
+	                    entity,
+	                    "id",
+	                    "regDate",
+	                    "modDate",
+	                    "bank"
+	            );
+
+	        } else {
+
+	            // ADD
+	            entity = new DataEntity();
+
+	            BeanUtils.copyProperties(
+	                    request,
+	                    entity,
+	                    "id",
+	                    "regDate",
+	                    "modDate",
+	                    "bank"
+	            );
+	        }
+
+	        entity.setStatus(status);
+
+	        // Save null fields as null.
+	        return dataRepo.save(entity);
+	    }
+
+	    private void validateSubmitData(DataEntity data) {
+
+	        // Add your actual mandatory fields here.
+
+	        if (data.getCode() == null || data.getCode().trim().isEmpty()) {
+	            throw new IllegalArgumentException("Code is required");
+	        }
+
+	        if (data.getTotalAmount() == null) {
+	            throw new IllegalArgumentException("Total Amount is required");
+	        }
+
+	        if (data.getOccurrence() == null) {
+	            throw new IllegalArgumentException("Occurrence Date is required");
+	        }
+
+	        if (data.getDetection() == null) {
+	            throw new IllegalArgumentException("Detection Date is required");
+	        }
+	    }
 }

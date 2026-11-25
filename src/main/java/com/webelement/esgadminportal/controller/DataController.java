@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -77,12 +78,51 @@ public class DataController {
 		return response;
 	}
 
-	@PostMapping("/save-or-update")
-	public ApiResponse<DataEntity> saveOrUpdateData(@Valid @RequestBody DataEntity request,
-			HttpServletRequest httpRequest) {
-		ApiResponse<DataEntity> response = dataService.saveOrUpdateData(request, httpRequest);
-		return response;
-	}
+//	@PostMapping("/save-or-update")
+//	public ApiResponse<DataEntity> saveOrUpdateData(@Valid @RequestBody DataEntity request,
+//			HttpServletRequest httpRequest) {
+//		ApiResponse<DataEntity> response = dataService.saveOrUpdateData(request, httpRequest);
+//		return response;
+//	}
+	
+	 @PostMapping("/save-or-update")
+	    public ResponseEntity<Map<String, Object>> saveDataAdmin(
+	            @RequestBody DataEntity request) {
+
+	        Map<String, Object> response = new HashMap<>();
+
+	        try {
+
+	            DataEntity savedData = dataService.saveDataAdmin(request);
+
+	            response.put("success", true);
+	            response.put("message", "Data saved successfully");
+	            response.put("id", savedData.getId());
+	            response.put("status", savedData.getStatus());
+
+	            return ResponseEntity.ok(response);
+
+	        } catch (IllegalArgumentException e) {
+
+	            response.put("success", false);
+	            response.put("message", e.getMessage());
+
+	            return ResponseEntity
+	                    .status(HttpStatus.BAD_REQUEST)
+	                    .body(response);
+
+	        } catch (Exception e) {
+
+	            e.printStackTrace();
+
+	            response.put("success", false);
+	            response.put("message", "Failed to save data");
+
+	            return ResponseEntity
+	                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+	                    .body(response);
+	        }
+	    }
 
 	@GetMapping("/getDataById/{id}")
 	public Map<String, Object> getDataById(@PathVariable Integer id) {
