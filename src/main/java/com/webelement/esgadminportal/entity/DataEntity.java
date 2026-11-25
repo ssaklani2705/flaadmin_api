@@ -44,11 +44,11 @@ public class DataEntity {
 	@Column(name = "s_status_of_perpetrator")
 	private String statusOfPerpetrator;
 
-//	@NotBlank(message = "Type of account is required")
+//	@NotBlank(message = "Type of account is required") // Type of account where the fraud was perpetrated *
 	@Column(name = "s_type_of_account")
 	private String typeOfAccount;
 
-	@Column(name = "s_type_of_acc_other")
+	@Column(name = "s_type_of_acc_other")  // If Other (Please specify)
 	private String typeOfAccOther;
 
 //	@NotBlank(message = "Section of account is required")

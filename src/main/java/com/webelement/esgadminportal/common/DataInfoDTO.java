@@ -22,6 +22,8 @@ public class DataInfoDTO {
 	private String branchCategory;
 	private String perpetratorStatus;
 	private String accountType;
+	private String accountTypeOther;
+	
 	private String industrySector;
 	private String areaOfOperation;
 	private String fraudType;

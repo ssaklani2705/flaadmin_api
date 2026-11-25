@@ -19,7 +19,8 @@ public class SecurityConfig {
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 		http.csrf().disable().cors() // Enable CORS
 				.and().authorizeRequests().antMatchers(HttpMethod.OPTIONS, "/**").permitAll() // Allow preflight
-				.antMatchers("/admin/**").permitAll().antMatchers("/auth/**").permitAll() // Login & Refresh token
+				.antMatchers("/auth/**").permitAll() // Login & Refresh token
+//				.antMatchers("/admin/**").permitAll()
 				.antMatchers("/authuser/**").permitAll().anyRequest().authenticated() // Protect all other APIs
 				.and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
