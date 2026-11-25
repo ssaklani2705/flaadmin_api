@@ -12,25 +12,19 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 public class SecurityConfig {
 
-    @Autowired
-    private JwtRequestFilter jwtFilter;
+	@Autowired
+	private JwtRequestFilter jwtFilter;
 
-    @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.csrf().disable()
-            .cors()  // Enable CORS
-            .and()
-            .authorizeRequests()
-                .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()  // Allow preflight
-                .antMatchers("/auth/**").permitAll()               // Login & Refresh token
-                .antMatchers("/authuser/**").permitAll()   
-                .anyRequest().authenticated()                      // Protect all other APIs
-            .and()
-            .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+	@Bean
+	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+		http.csrf().disable().cors() // Enable CORS
+				.and().authorizeRequests().antMatchers(HttpMethod.OPTIONS, "/**").permitAll() // Allow preflight
+				.antMatchers("/admin/**").permitAll().antMatchers("/auth/**").permitAll() // Login & Refresh token
+				.antMatchers("/authuser/**").permitAll().anyRequest().authenticated() // Protect all other APIs
+				.and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
-        http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+		http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
-        return http.build();
-    }
+		return http.build();
+	}
 }
