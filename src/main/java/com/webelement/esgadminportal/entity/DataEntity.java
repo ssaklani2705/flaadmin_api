@@ -164,7 +164,7 @@ public class DataEntity {
 	@Column(name = "s_compromise_settlement")
 	private String compromiseSettlement;
 
-	@NotNull(message = "Compromise amount is required")
+//	@NotNull(message = "Compromise amount is required")
 	@Column(name = "d_compromise_amount", precision = 18, scale = 2)
 	private BigDecimal compromiseAmount;
 

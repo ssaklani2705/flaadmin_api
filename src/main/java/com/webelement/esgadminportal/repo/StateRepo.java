@@ -13,6 +13,6 @@ import com.webelement.esgadminportal.entity.StateEntity;
 public interface StateRepo extends JpaRepository<StateEntity, Integer> {
 
 	@Query("SELECT new com.webelement.esgadminportal.common.StateDropdownDTO(s.stateId, s.name) "
-			+ "FROM StateEntity s ORDER BY s.name ASC")
+			+ "FROM StateEntity s ORDER BY s.stateId ASC")
 	List<StateDropdownDTO> getAllStates();
 }

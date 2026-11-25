@@ -279,7 +279,7 @@ public class AuthBankService {
 			String cc[] = new String[0];
 			String bcc[] = new String[0];
 			String subject = "";
-			subject = "ESG PORTAL :: Forgot Password";
+			subject = "FLA :: Forgot Password";
 			// commonFunction.postMailAttach(to, new String[0], new String[0], mailBody,
 			// "Welcome", "", "", -1, "");
 			SmtpEntity findLatestSmtpDetail = smtpRepo.findLatestSmtpDetails();
