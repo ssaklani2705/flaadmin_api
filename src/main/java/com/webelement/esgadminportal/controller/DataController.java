@@ -2,6 +2,7 @@ package com.webelement.esgadminportal.controller;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -11,6 +12,7 @@ import javax.validation.Valid;
 
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.webelement.esgadminportal.common.ApiResponse;
 import com.webelement.esgadminportal.common.DataDetailDTO;
@@ -44,7 +47,33 @@ public class DataController {
 	
 	private final DataRepo dataRepo;
 	
-	
+
+@PostMapping(value = "/uploadDataExcel", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+public ResponseEntity<Map<String, Object>> uploadDataExcel(
+        @RequestParam("file") MultipartFile file,
+        @RequestParam(value = "addedBy", required = false) Integer addedBy,
+        @RequestParam(value = "bankId", required = false) Integer bankId,
+        HttpServletRequest httpRequest) {
+
+    try {
+        return ResponseEntity.ok(dataService.uploadDataExcel(file, addedBy, bankId, httpRequest));
+
+    } catch (IllegalArgumentException e) {
+    	System.out.println("Excel upload rejected: {}"+ e.getMessage());
+        Map<String, Object> body = new LinkedHashMap<>();
+        body.put("success", false);
+        body.put("message", e.getMessage());
+        return ResponseEntity.badRequest().body(body);
+
+    } catch (Exception e) {
+    	System.out.println("Excel upload failed"+ e);
+
+        Map<String, Object> body = new LinkedHashMap<>();
+        body.put("success", false);
+        body.put("message", "Upload failed. Please try again.");
+        return ResponseEntity.status(500).body(body);
+    }
+}
 
 
 	@GetMapping("/list")
