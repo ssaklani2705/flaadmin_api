@@ -3,6 +3,8 @@ package com.webelement.esgadminportal.common;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -23,6 +25,7 @@ public class DataInfoDTO {
 	private String industrySector;
 	private String areaOfOperation;
 	private String fraudType;
+	@JsonSerialize(using = IndianAmountSerializer.class)
 	private BigDecimal totalAmount;
 	private LocalDate dateOfOccurrence;
 	private LocalDate dateOfDetection;
