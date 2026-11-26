@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.webelement.esgadminportal.common.ApiResponse;
+import com.webelement.esgadminportal.common.ChangePasswordDTO;
 import com.webelement.esgadminportal.common.LoginRequest;
 import com.webelement.esgadminportal.common.LoginResponse;
 import com.webelement.esgadminportal.common.RefreshTokenResponse;
@@ -206,4 +207,12 @@ public class AuthController {
 		return authService.forgotpassword(emailId, userId, password);
 	}
 
+	
+	@PostMapping("/change_password")
+	public ResponseEntity<ResponseApi<String>> changePassword(@RequestBody ChangePasswordDTO request) {
+		String message = authService.changePassword(request);
+
+
+		return ResponseEntity.ok(new ResponseApi<String>(true, message, null));
+	}
 }

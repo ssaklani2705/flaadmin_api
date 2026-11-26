@@ -187,7 +187,7 @@ public final class DataExcelAllowedValues {
             "Other");
 
     public static final List<String> DETECTION_SOURCES = Arrays.asList(
-            "Customer Complaints",
+            "Cusomer Complaints",
             "Internal inspections/audit",
             "External audit",
             "MIS of bank",

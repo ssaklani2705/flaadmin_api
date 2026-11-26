@@ -85,5 +85,8 @@ public interface UserLoginRepository extends JpaRepository<UserLoginEntity, Inte
 	@Modifying
 	@Query("UPDATE UserLoginEntity u " + "SET u.status = :status " + "WHERE u.userId = :userId")
 	int deleteUser(@Param("status") int status, @Param("userId") int userId);
+	
+	@Query(value = "SELECT s_password FROM t_userlogin WHERE i_userid = :userId", nativeQuery = true)
+	String findPasswordByUserId(Integer userId);
 
 }
