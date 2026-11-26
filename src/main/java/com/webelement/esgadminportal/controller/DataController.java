@@ -41,23 +41,10 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/admin/data")
 @CrossOrigin(origins = { "http://localhost:4200", "https://www.iba.org.in", "http://192.168.0.173:4200",
 		"http://192.168.0.100:4200", "http://192.168.0.100:8080" })
-
 public class DataController {
-
 	private final DataService dataService;
-	
 	private final DataRepo dataRepo;
-<<<<<<< HEAD
-
 	private final UserTransactionRepo transactionRepo;
-
-=======
-
-	private final UserTransactionRepo transactionRepo;
-	
-	
-
-	
 
 @PostMapping(value = "/uploadDataExcel", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 public ResponseEntity<Map<String, Object>> uploadDataExcel(
@@ -85,7 +72,7 @@ public ResponseEntity<Map<String, Object>> uploadDataExcel(
         return ResponseEntity.status(500).body(body);
     }
 }
->>>>>>> 85d26dc5292d3df4a54dcdecd7c252738c7f127f
+
 
 	@GetMapping("/list")
 	public Map<String, Object> findDataDetails(@RequestParam(defaultValue = "0") int page,
