@@ -72,8 +72,4 @@ public interface DataRepo extends JpaRepository<DataEntity, Integer> {
 			+ "GROUP BY d.status " + "ORDER BY d.status")
 	List<Object[]> countByStatusAndBankId(@Param("bankId") Integer bankId);
 	
-	@Modifying
-	 @Transactional
-	 @Query("UPDATE DataEntity d SET d.status = 4 WHERE d.id = :dataId AND d.status IN (1, 2)")
-	 int softDeleteData(@Param("dataId") Integer dataId);
 }
