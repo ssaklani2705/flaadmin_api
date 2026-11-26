@@ -17,6 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import com.webelement.esgadminportal.common.ChangePasswordDTO;
 import com.webelement.esgadminportal.common.CommonFunction;
 import com.webelement.esgadminportal.common.LoginRequest;
 import com.webelement.esgadminportal.common.LoginResponse;
@@ -27,6 +28,7 @@ import com.webelement.esgadminportal.entity.MailLogEntity;
 import com.webelement.esgadminportal.entity.SmtpEntity;
 import com.webelement.esgadminportal.entity.UserAccessLogEntity;
 import com.webelement.esgadminportal.entity.UserLoginEntity;
+import com.webelement.esgadminportal.exception.PasswordValidationException;
 import com.webelement.esgadminportal.jwttoken.JwtUtil;
 import com.webelement.esgadminportal.repo.MailLogRepo;
 import com.webelement.esgadminportal.repo.SmtpRepo;
@@ -39,6 +41,9 @@ public class AuthService {
 	private CommonFunction commonFunction;
 	@Autowired
 	UserLoginRepository userLoginRepository;
+	
+	@Autowired
+	PasswordService passwordService;
 
 	@Autowired
 	private JwtUtil jwtUtil;
@@ -388,6 +393,58 @@ System.out.println("serverCaptcha : "+serverCaptcha);
 
 	private Integer getInt(Object obj) {
 		return obj instanceof Number ? ((Number) obj).intValue() : 0;
+	}
+
+	@Transactional
+	public String changePassword(ChangePasswordDTO request) {
+//		validateChangePasswordRequest(request);
+//
+//		AppUser me = CurrentUser.get();
+
+
+		String oldPassword;
+		String newPassword;
+		String userId;
+
+
+		try {
+			oldPassword = commonFunction.decipher(request.getOldPassword());
+			newPassword = commonFunction.decipher(request.getNewPassword());
+			userId = commonFunction.decipher(request.getUserId());
+		} catch (Exception e) {
+			throw new PasswordValidationException("Invalid encrypted request data.", e);
+		}
+
+
+		validateNewPassword(oldPassword, newPassword);
+
+
+		String stored = userLoginRepository.findPasswordByUserId(Integer.parseInt(userId));
+
+
+		if (!passwordService.matches(oldPassword, stored)) {
+			throw new PasswordValidationException("Old password is incorrect.");
+		}
+
+
+		int rows = userLoginRepository.updateForgotPassword(Integer.parseInt(userId), request.getNewPassword(), null);
+
+
+		if (rows != 1) {
+			throw new IllegalStateException("Password update failed. Please try again.");
+		}
+
+
+		return "Password changed successfully.";
+	}
+	
+	private void validateNewPassword(String oldPassword, String newPassword) {
+		if (newPassword.length() < 8) {
+			throw new PasswordValidationException("New password must contain at least 8 characters.");
+		}
+		if (oldPassword.equals(newPassword)) {
+			throw new PasswordValidationException("New password must be different from the old password.");
+		}
 	}
 
 }
