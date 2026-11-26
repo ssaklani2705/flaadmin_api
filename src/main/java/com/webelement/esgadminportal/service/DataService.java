@@ -49,12 +49,12 @@ public class DataService {
 	
 	private final CommonFunction commonFunction;
 	
-	public Page<DataInfoDTO> findDataDetails(int page, int size, int statusIndex, String search,int userId) {
+	public Page<DataInfoDTO> findDataDetails(int page, int size, int statusIndex, String search,int userId,String catOfBranch) {
 		System.out.println("userId : "+userId);
 		Integer bankId = bankUserRepo.findBankIdByBankUserId(userId);
 		System.out.println("bankId : "+bankId);
 		
-		return dataRepo.findDataDetails(PageRequest.of(page, size), statusIndex, search,bankId);
+		return dataRepo.findDataDetails(PageRequest.of(page, size), statusIndex, search,bankId,catOfBranch);
 	}
 
 //	public Page<DataInfoDTO> findDataDetails(int page, int size, int statusIndex, String search) {
@@ -300,6 +300,10 @@ public class DataService {
 @Transactional
 public Map<String, Object> uploadDataExcel(MultipartFile file, Integer addedBy, Integer bankId,
                                            HttpServletRequest httpRequest) {
+	
+	System.out.println("UPLOAD HIT v2");
+	System.out.println("PARSER LOADED FROM: "
+	        + DataExcelParser.class.getProtectionDomain().getCodeSource().getLocation());
 
     if (file == null || file.isEmpty()) {
         throw new IllegalArgumentException("Please select an Excel file");

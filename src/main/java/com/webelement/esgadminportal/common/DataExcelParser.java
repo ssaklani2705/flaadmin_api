@@ -1,6 +1,5 @@
 package com.webelement.esgadminportal.common;
 
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
@@ -175,22 +174,36 @@ public class DataExcelParser {
                                       Integer status, Integer addedBy, Integer bankId) {
 
         String code = r.text(C_CODE, true, 50);
+        
+        for (int c = 0; c < HEADER_KEYS.length; c++) {
+            System.out.println("DEBUG col " + c + " [" + r.columnName(c) + "] = [" + r.raw(c) + "]");
+        }
+        
         String state = r.choice(C_STATE, true, states);
         String catOfBranch = r.choice(C_CAT_BRANCH, true, CATS);
         String perpStatus = r.choice(C_PERP_STATUS, false, PERPS);
 
-        String accType = r.choice(C_ACC_TYPE, true, ACC_TYPES);
-        String accOther = otherText(r, accType, C_ACC_OTHER);
+        // Dropdown + "If Other (Please specify)" pairs.
+        // If the "If Other" cell has text, the dropdown automatically becomes "Other".
+        String[] accPair = choiceWithOther(r, C_ACC_TYPE, C_ACC_OTHER, ACC_TYPES);
+        String accType = accPair[0];
+        String accOther = accPair[1];
+
         String sector = r.choice(C_SECTOR, true, SECTORS);
         String borrowal = r.choice(C_BORROWAL, true, YES_NO_MAP);
         String banking = r.choice(C_BANKING, true, BANKING);
 
-        String area = r.choice(C_AREA, true, AREAS);
-        String areaOther = otherText(r, area, C_AREA_OTHER);
-        String classif = r.choice(C_CLASSIF, true, CLASSIFS);
-        String classifOther = otherText(r, classif, C_CLASSIF_OTHER);
-        String fraudType = r.choice(C_FRAUD_TYPE, true, FRAUD_TYPE_MAP);
-        String fraudTypeOther = otherText(r, fraudType, C_FRAUD_TYPE_OTHER);
+        String[] areaPair = choiceWithOther(r, C_AREA, C_AREA_OTHER, AREAS);
+        String area = areaPair[0];
+        String areaOther = areaPair[1];
+
+        String[] classifPair = choiceWithOther(r, C_CLASSIF, C_CLASSIF_OTHER, CLASSIFS);
+        String classif = classifPair[0];
+        String classifOther = classifPair[1];
+
+        String[] fraudPair = choiceWithOther(r, C_FRAUD_TYPE, C_FRAUD_TYPE_OTHER, FRAUD_TYPE_MAP);
+        String fraudType = fraudPair[0];
+        String fraudTypeOther = fraudPair[1];
 
         BigDecimal total = r.amount(C_TOTAL, true, true);
 
@@ -201,8 +214,10 @@ public class DataExcelParser {
         String delay = r.text(C_DELAY, true, MAX_TEXT);
         LocalDate fullPayment = r.date(C_FULL_PAYMENT, false);
 
-        String detectMethod = r.choice(C_DETECT_METHOD, true, DETECTIONS);
-        String detectOther = otherText(r, detectMethod, C_DETECT_OTHER);
+        String[] detectPair = choiceWithOther(r, C_DETECT_METHOD, C_DETECT_OTHER, DETECTIONS);
+        String detectMethod = detectPair[0];
+        String detectOther = detectPair[1];
+
         String committedBy = r.choice(C_COMMITTED_BY, true, COMMITTED);
         String controlOffice = r.text(C_CONTROL_OFFICE, true, 200);
         String auditConducted = r.text(C_AUDIT_CONDUCTED, true, 200);
@@ -254,12 +269,33 @@ public class DataExcelParser {
                 .build();
     }
 
-    /** "If Other (Please specify)": required only when the dropdown is "Other", otherwise ignored (saved as null). */
-    private static String otherText(RowReader r, String selected, int col) {
-        if (selected != null && "Other".equalsIgnoreCase(selected)) {
-            return r.text(col, true, 50);
+    /**
+     * Dropdown + "If Other (Please specify)" pair.
+     * - If the "If Other" cell has any text -> dropdown is forced to "Other"
+     *   (even if the dropdown cell is blank, invalid or a different option).
+     * - Else if the dropdown is "Other"     -> "If Other" is required.
+     * - Else                                -> normal dropdown validation, "If Other" saved as null.
+     *
+     * @return {selectedValue, otherText}
+     */
+    
+    private static String[] choiceWithOther(RowReader r, int selCol, int otherCol,
+                                            Map<String, String> allowed) {
+    	System.out.println("DEBUG row dropdown=[" + r.raw(selCol) + "] ifOther=[" + r.raw(otherCol) + "]");
+
+        String canonicalOther = allowed.getOrDefault(normalize("Other"), "Other");
+
+        if (r.raw(otherCol) != null) {
+            String other = r.text(otherCol, true, 50);   // still checks the 50 character limit
+            return new String[] { canonicalOther, other };
         }
-        return null;
+
+        String selected = r.choice(selCol, true, allowed);
+        if (selected != null && "Other".equalsIgnoreCase(selected)) {
+            String other = r.text(otherCol, true, 50);   // "Other" selected, so the text is required
+            return new String[] { selected, other };
+        }
+        return new String[] { selected, null };
     }
 
     private static boolean headerMatches(Row header, DataFormatter fmt, FormulaEvaluator ev) {
@@ -350,7 +386,7 @@ public class DataExcelParser {
             String s = raw(c);
             if (s == null) {
                 if (required) {
-                    error(c, "is required");
+                    error(c, "is required [v2]");
                 }
                 return null;
             }
