@@ -35,15 +35,15 @@ import lombok.RequiredArgsConstructor;
 public class BankService {
 
 	
-	private BankRepo bankRepo;
+	private final BankRepo bankRepo;
 
 	
-	private TypeRepo typeRepo;
+	private final TypeRepo typeRepo;
 
 	
-	private CommonFunction commonFunction;
+	private final CommonFunction commonFunction;
 	
-	private ValidateData validateData;
+	private final ValidateData validateData;
 
 	public Page<BankInfoDTO> findBankDetails(int page, int size, int statusIndex, String search) {
 		return bankRepo.findBankDetails(PageRequest.of(page, size), statusIndex, search);
