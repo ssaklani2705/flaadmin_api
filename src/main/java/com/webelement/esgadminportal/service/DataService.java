@@ -26,7 +26,7 @@ import com.webelement.esgadminportal.Mapper.DataMapper;
 import com.webelement.esgadminportal.common.ApiResponse;
 import com.webelement.esgadminportal.common.CommonFunction;
 import com.webelement.esgadminportal.common.DataDetailDTO;
-import com.webelement.esgadminportal.common.DataExcelParserold;
+import com.webelement.esgadminportal.common.DataExcelParser;
 import com.webelement.esgadminportal.common.DataInfoDTO;
 import com.webelement.esgadminportal.entity.DataEntity;
 import com.webelement.esgadminportal.entity.StateEntity;
@@ -49,12 +49,12 @@ public class DataService {
 	
 	private final CommonFunction commonFunction;
 	
-	public Page<DataInfoDTO> findDataDetails(int page, int size, int statusIndex, String search,int userId) {
+	public Page<DataInfoDTO> findDataDetails(int page, int size, int statusIndex, String search,int userId,String catOfBranch) {
 		System.out.println("userId : "+userId);
 		Integer bankId = bankUserRepo.findBankIdByBankUserId(userId);
 		System.out.println("bankId : "+bankId);
 		
-		return dataRepo.findDataDetails(PageRequest.of(page, size), statusIndex, search,bankId);
+		return dataRepo.findDataDetails(PageRequest.of(page, size), statusIndex, search,bankId,catOfBranch);
 	}
 
 //	public Page<DataInfoDTO> findDataDetails(int page, int size, int statusIndex, String search) {
@@ -300,6 +300,10 @@ public class DataService {
 @Transactional
 public Map<String, Object> uploadDataExcel(MultipartFile file, Integer addedBy, Integer bankId,
                                            HttpServletRequest httpRequest) {
+	
+	System.out.println("UPLOAD HIT v2");
+	System.out.println("PARSER LOADED FROM: "
+	        + DataExcelParser.class.getProtectionDomain().getCodeSource().getLocation());
 
     if (file == null || file.isEmpty()) {
         throw new IllegalArgumentException("Please select an Excel file");
@@ -317,10 +321,10 @@ public Map<String, Object> uploadDataExcel(MultipartFile file, Integer addedBy, 
             .map(StateEntity::getName)
             .collect(Collectors.toSet());
 
-    DataExcelParserold.ParseResult result;
+    DataExcelParser.ParseResult result;
     try (InputStream in = file.getInputStream()) {
         // Rows are saved as Draft so the user can review and Submit from the Edit page.
-        result = DataExcelParserold.parse(in, stateNames, STATUS_DRAFT, addedBy, bankId);
+        result = DataExcelParser.parse(in, stateNames, STATUS_DRAFT, addedBy, bankId);
     } catch (IOException | RuntimeException e) {
         e.printStackTrace();   // or log.error("Unable to parse uploaded Excel", e);
         throw new IllegalArgumentException(

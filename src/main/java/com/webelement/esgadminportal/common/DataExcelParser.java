@@ -174,6 +174,11 @@ public class DataExcelParser {
                                       Integer status, Integer addedBy, Integer bankId) {
 
         String code = r.text(C_CODE, true, 50);
+        
+        for (int c = 0; c < HEADER_KEYS.length; c++) {
+            System.out.println("DEBUG col " + c + " [" + r.columnName(c) + "] = [" + r.raw(c) + "]");
+        }
+        
         String state = r.choice(C_STATE, true, states);
         String catOfBranch = r.choice(C_CAT_BRANCH, true, CATS);
         String perpStatus = r.choice(C_PERP_STATUS, false, PERPS);
@@ -381,7 +386,7 @@ public class DataExcelParser {
             String s = raw(c);
             if (s == null) {
                 if (required) {
-                    error(c, "is required");
+                    error(c, "is required [v2]");
                 }
                 return null;
             }

@@ -67,8 +67,8 @@ public class DataController {
 	@GetMapping("/list")
 	public Map<String, Object> findDataDetails(@RequestParam(defaultValue = "0") int page,
 			@RequestParam(defaultValue = "10") int size, @RequestParam int statusIndex,
-			@RequestParam(defaultValue = "") String search, @RequestParam int userId) {
-		Page<DataInfoDTO> dataPage = dataService.findDataDetails(page, size, statusIndex, search, userId);
+			@RequestParam(defaultValue = "") String search, @RequestParam int userId,@RequestParam String catOfBranch) {
+		Page<DataInfoDTO> dataPage = dataService.findDataDetails(page, size, statusIndex, search, userId,catOfBranch);
 
 		Map<String, Object> response = new HashMap<>();
 		response.put("data", dataPage.getContent());

@@ -26,7 +26,9 @@ public class DataInfoDTO {
 	
 	private String industrySector;
 	private String areaOfOperation;
+	private String areaOther;
 	private String fraudType;
+	private String fraudTypeOther;
 	@JsonSerialize(using = IndianAmountSerializer.class)
 	private BigDecimal totalAmount;
 	private LocalDate dateOfOccurrence;
@@ -34,6 +36,7 @@ public class DataInfoDTO {
 	private LocalDate dateOfClassification;
 	private LocalDate dateReportedToRbi;
 	private String howDetected;
+	private String detectionOtherSource;
 	private Integer status;
 	private Integer addedBy;
 	
@@ -44,7 +47,8 @@ public class DataInfoDTO {
 	public DataInfoDTO(Integer dataId, String entityCode, String state, String branchCategory, String perpetratorStatus,
 			String accountType, String industrySector, String areaOfOperation, String fraudType, BigDecimal totalAmount,
 			LocalDate dateOfOccurrence, LocalDate dateOfDetection, LocalDate dateOfClassification,
-			LocalDate dateReportedToRbi, String howDetected, Integer status,Integer addedBy) {
+			LocalDate dateReportedToRbi, String howDetected, Integer status,Integer addedBy,String accountTypeOther,
+			String areaOther,String fraudTypeOther,String detectionOtherSource) {
 		this.dataId = dataId;
 		this.entityCode = entityCode;
 		this.state = state;
@@ -62,6 +66,10 @@ public class DataInfoDTO {
 		this.howDetected = howDetected;
 		this.status = status;
 		this.addedBy = addedBy;
+		this.accountTypeOther = accountTypeOther;
+		this.areaOther = areaOther;
+		this.fraudTypeOther = fraudTypeOther;
+		this.detectionOtherSource = detectionOtherSource;
 	}
 	
 	
