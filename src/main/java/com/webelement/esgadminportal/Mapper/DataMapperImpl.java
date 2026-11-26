@@ -19,9 +19,13 @@ public class DataMapperImpl implements DataMapper {
 				.branchCategory(d.getCatOfBranch()).perpetratorStatus(d.getStatusOfPerpetrator())
 				.accountType(d.getTypeOfAccount())
 				.accountTypeOther(d.getTypeOfAccOther())
-				.areaOfOperation(d.getAreaOfOperation()).fraudType(d.getTypeOfFraud())
-				.totalAmount(d.getTotalAmount()).dateOfOccurrence(d.getOccurrence()).dateOfDetection(d.getDetection())
-				.dateOfClassification(d.getClassification()).dateReportedToRbi(d.getReportedToRbi())
+				.areaOfOperation(d.getAreaOfOperation())
+				.fraudType(d.getTypeOfFraud())
+				.totalAmount(d.getTotalAmount())
+				.dateOfOccurrence(d.getOccurrence())
+				.dateOfDetection(d.getDetection())
+				.dateOfClassification(d.getClassification())
+				.dateReportedToRbi(d.getReportedToRbi())
 				.howDetected(d.getDetectionMethod()).status(d.getStatus())
 				.bankName(d.getBank() != null ? d.getBank().getName() : null).build();
 	}

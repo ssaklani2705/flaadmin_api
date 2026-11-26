@@ -1,15 +1,10 @@
 package com.webelement.esgadminportal.controller;
-
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
 import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
-
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -24,7 +19,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-
 import com.webelement.esgadminportal.common.ApiResponse;
 import com.webelement.esgadminportal.common.DataDetailDTO;
 import com.webelement.esgadminportal.common.DataInfoDTO;
@@ -33,19 +27,47 @@ import com.webelement.esgadminportal.entity.TransactionEntity;
 import com.webelement.esgadminportal.repo.DataRepo;
 import com.webelement.esgadminportal.repo.UserTransactionRepo;
 import com.webelement.esgadminportal.service.DataService;
-
 import lombok.RequiredArgsConstructor;
-
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/admin/data")
+<<<<<<< HEAD
+@CrossOrigin(origins = { "http://localhost:4200", "https://www.iba.org.in", "http://192.168.0.173:4200","http://192.168.0.100:4200", "http://192.168.0.100:8080" })
+=======
 @CrossOrigin(origins = { "http://localhost:4200", "https://www.iba.org.in", "http://192.168.0.173:4200",
 		"http://192.168.0.100:4200", "http://192.168.0.100:8080" })
+>>>>>>> 8fea4c3defa86b7dfc98edd5f07d6c2295e5724b
 public class DataController {
 	private final DataService dataService;
 	private final DataRepo dataRepo;
 	private final UserTransactionRepo transactionRepo;
 
+<<<<<<< HEAD
+	@PostMapping(value = "/uploadDataExcel", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+	public ResponseEntity<Map<String, Object>> uploadDataExcel(@RequestParam("file") MultipartFile file,
+			@RequestParam(value = "addedBy", required = false) Integer addedBy,
+			@RequestParam(value = "bankId", required = false) Integer bankId, HttpServletRequest httpRequest) {
+
+		try {
+			return ResponseEntity.ok(dataService.uploadDataExcel(file, addedBy, bankId, httpRequest));
+
+		} catch (IllegalArgumentException e) {
+			System.out.println("Excel upload rejected: {}" + e.getMessage());
+			Map<String, Object> body = new LinkedHashMap<>();
+			body.put("success", false);
+			body.put("message", e.getMessage());
+			return ResponseEntity.badRequest().body(body);
+
+		} catch (Exception e) {
+			System.out.println("Excel upload failed" + e);
+
+			Map<String, Object> body = new LinkedHashMap<>();
+			body.put("success", false);
+			body.put("message", "Upload failed. Please try again.");
+			return ResponseEntity.status(500).body(body);
+		}
+	}
+=======
 @PostMapping(value = "/uploadDataExcel", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 public ResponseEntity<Map<String, Object>> uploadDataExcel(
         @RequestParam("file") MultipartFile file,
@@ -73,6 +95,7 @@ public ResponseEntity<Map<String, Object>> uploadDataExcel(
     }
 }
 
+>>>>>>> 8fea4c3defa86b7dfc98edd5f07d6c2295e5724b
 
 	@GetMapping("/list")
 	public Map<String, Object> findDataDetails(@RequestParam(defaultValue = "0") int page,
@@ -85,47 +108,42 @@ public ResponseEntity<Map<String, Object>> uploadDataExcel(
 		response.put("totalElements", dataPage.getTotalElements());
 		return response;
 	}
-	
+
 	@PostMapping("/approve/{dataId}")
-	public Map<String, Object> approveData(@PathVariable Integer dataId,@RequestParam(value = "userId", required = false) Integer userId,
-            HttpServletRequest httpRequest) {
+	public Map<String, Object> approveData(@PathVariable Integer dataId,
+			@RequestParam(value = "userId", required = false) Integer userId, HttpServletRequest httpRequest) {
 
-	    Map<String, Object> response = new HashMap<>();
+		Map<String, Object> response = new HashMap<>();
 
-	    boolean approved = dataService.approveData(dataId,userId, httpRequest);
+		boolean approved = dataService.approveData(dataId, userId, httpRequest);
 
-	    response.put("data", approved);
-	    response.put("totalElements", approved ? 1 : 0);
-	    response.put("message", approved
-	            ? "Record approved successfully"
-	            : "Record not found or already processed");
+		response.put("data", approved);
+		response.put("totalElements", approved ? 1 : 0);
+		response.put("message", approved ? "Record approved successfully" : "Record not found or already processed");
 
-	    return response;
+		return response;
 	}
-	
+
 	@PostMapping("/delete/{dataId}")
 	public Map<String, Object> deleteData(@PathVariable Integer dataId,
-	                                      @RequestParam(value = "userId", required = false) Integer userId,
-	                                      HttpServletRequest httpRequest) {
+			@RequestParam(value = "userId", required = false) Integer userId, HttpServletRequest httpRequest) {
 
-	    Map<String, Object> response = new HashMap<>();
+		Map<String, Object> response = new HashMap<>();
 
-	    boolean deleted = dataService.softDeleteData(dataId, userId, httpRequest);
+		boolean deleted = dataService.softDeleteData(dataId, userId, httpRequest);
 
-	    response.put("data", deleted);
-	    response.put("totalElements", deleted ? 1 : 0);
-	    response.put("message", deleted
-	            ? "Record deleted successfully"
-	            : "Record not found or cannot be deleted");
+		response.put("data", deleted);
+		response.put("totalElements", deleted ? 1 : 0);
+		response.put("message", deleted ? "Record deleted successfully" : "Record not found or cannot be deleted");
 
-	    return response;
+		return response;
 	}
 
 	@GetMapping("/admin-data-index")
 	public Map<String, Object> adminDataList(@RequestParam(defaultValue = "0") int page,
 			@RequestParam(defaultValue = "10") int size, @RequestParam(defaultValue = "0") int statusIndex,
-			@RequestParam(defaultValue = "") String search,@RequestParam(defaultValue = "0") int bankId) {
-		Page<DataInfoDTO> dataPage = dataService.adminDataListService(page, size, statusIndex, search,bankId);
+			@RequestParam(defaultValue = "") String search, @RequestParam(defaultValue = "0") int bankId) {
+		Page<DataInfoDTO> dataPage = dataService.adminDataListService(page, size, statusIndex, search, bankId);
 
 		Map<String, Object> response = new HashMap<>();
 		response.put("data", dataPage.getContent());
@@ -139,45 +157,41 @@ public ResponseEntity<Map<String, Object>> uploadDataExcel(
 //		ApiResponse<DataEntity> response = dataService.saveOrUpdateData(request, httpRequest);
 //		return response;
 //	}
-	
-	 @PostMapping("/save-or-update")
-	    public ResponseEntity<Map<String, Object>> saveDataAdmin(
-	            @RequestBody DataEntity request,HttpServletRequest httpRequest) {
 
-	        Map<String, Object> response = new HashMap<>();
+	@PostMapping("/save-or-update")
+	public ResponseEntity<Map<String, Object>> saveDataAdmin(@RequestBody DataEntity request,
+			HttpServletRequest httpRequest) {
 
-	        try {
+		Map<String, Object> response = new HashMap<>();
 
-	            DataEntity savedData = dataService.saveDataAdmin(request,httpRequest);
+		try {
 
-	            response.put("success", true);
-	            response.put("message", "Data saved successfully");
-	            response.put("id", savedData.getId());
-	            response.put("status", savedData.getStatus());
+			DataEntity savedData = dataService.saveDataAdmin(request, httpRequest);
 
-	            return ResponseEntity.ok(response);
+			response.put("success", true);
+			response.put("message", "Data saved successfully");
+			response.put("id", savedData.getId());
+			response.put("status", savedData.getStatus());
 
-	        } catch (IllegalArgumentException e) {
+			return ResponseEntity.ok(response);
 
-	            response.put("success", false);
-	            response.put("message", e.getMessage());
+		} catch (IllegalArgumentException e) {
 
-	            return ResponseEntity
-	                    .status(HttpStatus.BAD_REQUEST)
-	                    .body(response);
+			response.put("success", false);
+			response.put("message", e.getMessage());
 
-	        } catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
 
-	            e.printStackTrace();
+		} catch (Exception e) {
 
-	            response.put("success", false);
-	            response.put("message", "Failed to save data");
+			e.printStackTrace();
 
-	            return ResponseEntity
-	                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
-	                    .body(response);
-	        }
-	    }
+			response.put("success", false);
+			response.put("message", "Failed to save data");
+
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+		}
+	}
 
 	@GetMapping("/getDataById/{id}")
 	public Map<String, Object> getDataById(@PathVariable Integer id) {
@@ -191,14 +205,14 @@ public ResponseEntity<Map<String, Object>> uploadDataExcel(
 		}
 
 		// Append transaction history
-        List<TransactionEntity> history = getTransactionLogs(2, id);
+		List<TransactionEntity> history = getTransactionLogs(2, id);
 //        detail.setHistory(history);
 		response.put("success", true);
 		response.put("data", detail);
 		response.put("history", history); // TODO: fill from an action-history table
 		return response;
 	}
-	
+
 	public List<TransactionEntity> getTransactionLogs(int moduleId, Integer recordId) {
 		List<Object[]> results = transactionRepo.getTransactionLogs2(moduleId, recordId);
 		System.out.println("results : " + results);
