@@ -13,15 +13,20 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.webelement.esgadminportal.common.MailLogDTO;
+import com.webelement.esgadminportal.jwttoken.JwtUtil;
+import com.webelement.esgadminportal.service.JwtService;
 import com.webelement.esgadminportal.service.MailLogService;
+import com.webelement.esgadminportal.service.TokenBlacklistService;
+import com.webelement.esgadminportal.service.UserAccessLogService;
+
+import lombok.RequiredArgsConstructor;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/mailLog")
-@CrossOrigin(origins = { "http://localhost:4200", "http://192.168.0.196:4200", "https://www.iba.org.in" })
+@CrossOrigin(origins = "${app.cors.allowed-origins}")
 public class MailLogController {
-
-	@Autowired
-	MailLogService mailLogService;
+	private final MailLogService mailLogService;
 
 	@GetMapping("/getMailLogDetails")
 	public Map<String, Object> getMailLogDetails(@RequestParam int page, @RequestParam int size,

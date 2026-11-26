@@ -11,15 +11,20 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.webelement.esgadminportal.common.UserAccessLogDTO;
+import com.webelement.esgadminportal.jwttoken.JwtUtil;
+import com.webelement.esgadminportal.service.JwtService;
+import com.webelement.esgadminportal.service.TokenBlacklistService;
 import com.webelement.esgadminportal.service.UserAccessLogService;
 
+import lombok.RequiredArgsConstructor;
+
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/useraccesslog")
-@CrossOrigin(origins = {"http://localhost:4200","https://www.iba.org.in"})
+@CrossOrigin(origins = "${app.cors.allowed-origins}")
 public class UserAccessLogController {
 	
-	@Autowired
-	private UserAccessLogService accessLogService;
+	private final UserAccessLogService accessLogService;
 	
 	@GetMapping("/getUserAccessDetails")
     public Map<String, Object> getUserAccessDetails(

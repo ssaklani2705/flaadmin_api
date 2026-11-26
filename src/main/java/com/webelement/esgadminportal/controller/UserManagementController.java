@@ -19,17 +19,20 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.webelement.esgadminportal.common.UserInfo;
 import com.webelement.esgadminportal.entity.UserLoginEntity;
+import com.webelement.esgadminportal.jwttoken.JwtUtil;
+import com.webelement.esgadminportal.service.JwtService;
+import com.webelement.esgadminportal.service.TokenBlacklistService;
+import com.webelement.esgadminportal.service.UserAccessLogService;
 import com.webelement.esgadminportal.service.UserManagementService;
 
-@RestController
-@RequestMapping("/admin")
-//@CrossOrigin(value = "*")
-@CrossOrigin(origins = { "http://localhost:4200", "https://www.iba.org.in", "http://192.168.0.173:4200",
-		"http://192.168.0.100:4200" })
-public class UserManagementController {
+import lombok.RequiredArgsConstructor;
 
-	@Autowired
-	private UserManagementService userService;
+@RestController
+@RequiredArgsConstructor
+@RequestMapping("/admin")
+@CrossOrigin(origins = "${app.cors.allowed-origins}")
+public class UserManagementController {
+	private final UserManagementService userService;
 
 	@GetMapping("/getUserManagementDetails")
 	public Map<String, Object> findBasicUserInfo(@RequestParam() int page, @RequestParam() int size,

@@ -25,20 +25,22 @@ import com.webelement.esgadminportal.common.LoginRequest;
 import com.webelement.esgadminportal.common.LoginResponse;
 import com.webelement.esgadminportal.common.ResponseApi;
 import com.webelement.esgadminportal.jwttoken.JwtUtil;
+import com.webelement.esgadminportal.repo.DataRepo;
+import com.webelement.esgadminportal.repo.UserTransactionRepo;
 import com.webelement.esgadminportal.service.AuthBankService;
+import com.webelement.esgadminportal.service.DataService;
+
+import lombok.RequiredArgsConstructor;
 
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/authuser")
-//@CrossOrigin(value = "*")
-@CrossOrigin(origins = {"http://localhost:4200","https://www.iba.org.in","http://192.168.0.173:4200"})
+@CrossOrigin(origins = "${app.cors.allowed-origins}")
 public class AuthBankController {
 	
-	@Autowired
-	private AuthBankService authService;
-	
-	@Autowired
-	private JwtUtil jwtUtil;
+	private final AuthBankService authService;
+	private final JwtUtil jwtUtil;
 
 	@GetMapping("/captcha")
 	public ResponseEntity<ResponseApi<String>> generateCaptcha(HttpSession session, HttpServletRequest httpRequest) {		

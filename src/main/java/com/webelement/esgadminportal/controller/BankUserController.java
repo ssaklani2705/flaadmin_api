@@ -20,17 +20,21 @@ import org.springframework.web.bind.annotation.RestController;
 import com.webelement.esgadminportal.common.ResponseApi;
 import com.webelement.esgadminportal.common.UserInfoDTO;
 import com.webelement.esgadminportal.entity.BankUserEntity;
+import com.webelement.esgadminportal.jwttoken.JwtUtil;
+import com.webelement.esgadminportal.service.AuthService;
 import com.webelement.esgadminportal.service.BankUserService;
+import com.webelement.esgadminportal.service.JwtService;
+import com.webelement.esgadminportal.service.TokenBlacklistService;
+
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/admin")
-//@CrossOrigin(value = "*")
-@CrossOrigin(origins = { "http://localhost:4200", "https://www.iba.org.in", "http://192.168.0.173:4200",
-		"http://192.168.0.100:4200" })
+@RequiredArgsConstructor
+@CrossOrigin(origins = "${app.cors.allowed-origins}")
 public class BankUserController {
 
-	@Autowired
-	private BankUserService bankUserService;
+	private final BankUserService bankUserService;
 
 	@GetMapping("/getUserDetails")
 	public Map<String, Object> findBasicUserInfo(@RequestParam() int page, @RequestParam() int size,

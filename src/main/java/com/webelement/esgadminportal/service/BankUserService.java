@@ -32,32 +32,35 @@ import com.webelement.esgadminportal.repo.MailLogRepo;
 import com.webelement.esgadminportal.repo.SmtpRepo;
 import com.webelement.esgadminportal.repo.UserLoginRepository;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class BankUserService {
 
+
+
+	
+	private final BankUserRepo bankUserRepo;
+	
+	private final CommonFunction commonFunction;
+	
+	private final SmtpRepo smtpRepo;
+	
+	private final MailService mailService;
+	
+	private final MailLogRepo mailLogRepo;
+	
+	private final ValidateData validateData;
+
+	
+	private final UserLoginRepository userLoginRepository;
+	
 	@Value("${file_maillog:}")
 	private String file_maillog;
-//	@Value("${paths:}")
-//	private String paths;
 
 	@Value("${paths_esgportal:}")
 	private String paths;
-
-	@Autowired
-	private BankUserRepo bankUserRepo;
-	@Autowired
-	private CommonFunction commonFunction;
-	@Autowired
-	private SmtpRepo smtpRepo;
-	@Autowired
-	private MailService mailService;
-	@Autowired
-	private MailLogRepo mailLogRepo;
-	@Autowired
-	private ValidateData validateData;
-
-	@Autowired
-	private UserLoginRepository userLoginRepository;
 
 	public Page<UserInfoDTO> findBasicUserInfo(int page, int size, int statusIndex, String search) {
 		return bankUserRepo.findBasicUserInfo(PageRequest.of(page, size), statusIndex, search);
