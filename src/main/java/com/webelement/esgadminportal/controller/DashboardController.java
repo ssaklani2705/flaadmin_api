@@ -18,7 +18,7 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/admin/dasboard")
-@CrossOrigin(origins = { "http://localhost:4200", "https://www.iba.org.in", "http://192.168.0.173:4200","http://192.168.0.100:4200", "http://192.168.0.100:8080" })
+@CrossOrigin(origins ="${app.cors.allowed-origins}")
 public class DashboardController {
 	
 	private final DashboardService dashboardService;

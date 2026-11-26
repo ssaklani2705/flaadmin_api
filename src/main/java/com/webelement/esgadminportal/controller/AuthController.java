@@ -27,28 +27,26 @@ import com.webelement.esgadminportal.common.LoginResponse;
 import com.webelement.esgadminportal.common.RefreshTokenResponse;
 import com.webelement.esgadminportal.common.ResponseApi;
 import com.webelement.esgadminportal.jwttoken.JwtUtil;
+import com.webelement.esgadminportal.repo.DataRepo;
+import com.webelement.esgadminportal.repo.UserTransactionRepo;
 import com.webelement.esgadminportal.service.AuthService;
+import com.webelement.esgadminportal.service.DataService;
 import com.webelement.esgadminportal.service.JwtService;
 import com.webelement.esgadminportal.service.TokenBlacklistService;
 //import com.webelement.prospurapi.common.ApiResponse;
 //import com.webelement.prospurapi.common.RefreshTokenResponse;
 
+import lombok.RequiredArgsConstructor;
+
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/auth")
-@CrossOrigin(origins = { "http://localhost:4200", "https://www.iba.org.in", "http://192.168.0.173:4200",
-		"http://192.168.0.100:4200" }, allowCredentials = "true")
+@CrossOrigin(origins ="${app.cors.allowed-origins}", allowCredentials = "true")
 public class AuthController {
-
-	@Autowired
-	private AuthService authService;
-	@Autowired
-	private TokenBlacklistService blacklistService;
-
-	@Autowired
-	private JwtUtil jwtUtil;
-	
-	@Autowired
-	private JwtService jwtService;
+	private final AuthService authService;
+	private final TokenBlacklistService blacklistService;
+	private final JwtUtil jwtUtil;
+	private final JwtService jwtService;
 
 	@GetMapping("/test")
 	public String test() {

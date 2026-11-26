@@ -21,21 +21,28 @@ import com.webelement.esgadminportal.common.TypeDTO;
 import com.webelement.esgadminportal.common.ValidateData;
 import com.webelement.esgadminportal.entity.BankEntity;
 import com.webelement.esgadminportal.entity.TransactionEntity;
+import com.webelement.esgadminportal.jwttoken.JwtUtil;
 import com.webelement.esgadminportal.repo.BankRepo;
+import com.webelement.esgadminportal.repo.MailLogRepo;
+import com.webelement.esgadminportal.repo.SmtpRepo;
 import com.webelement.esgadminportal.repo.TypeRepo;
+import com.webelement.esgadminportal.repo.UserLoginRepository;
+
+import lombok.RequiredArgsConstructor;
 
 @Service
+@RequiredArgsConstructor
 public class BankService {
 
-	@Autowired
+	
 	private BankRepo bankRepo;
 
-	@Autowired
+	
 	private TypeRepo typeRepo;
 
-	@Autowired
+	
 	private CommonFunction commonFunction;
-	@Autowired
+	
 	private ValidateData validateData;
 
 	public Page<BankInfoDTO> findBankDetails(int page, int size, int statusIndex, String search) {

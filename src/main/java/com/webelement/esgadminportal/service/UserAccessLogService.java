@@ -16,13 +16,14 @@ import com.webelement.esgadminportal.common.UserAccessLogDTO;
 import com.webelement.esgadminportal.entity.UserAccessLogEntity;
 import com.webelement.esgadminportal.repo.UserAccessLogRepo;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class UserAccessLogService {
 
-	@Autowired
-	private UserAccessLogRepo accessLogRepo;
-	@Autowired
-	private CommonFunction commonFunction;
+	private final UserAccessLogRepo accessLogRepo;
+	private final CommonFunction commonFunction;
 
 	/**
 	 * Save login log

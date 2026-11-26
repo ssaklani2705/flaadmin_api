@@ -30,45 +30,34 @@ import com.webelement.esgadminportal.entity.UserAccessLogEntity;
 import com.webelement.esgadminportal.entity.UserLoginEntity;
 import com.webelement.esgadminportal.exception.PasswordValidationException;
 import com.webelement.esgadminportal.jwttoken.JwtUtil;
+import com.webelement.esgadminportal.repo.BankRepo;
+import com.webelement.esgadminportal.repo.BankUserRepo;
 import com.webelement.esgadminportal.repo.MailLogRepo;
 import com.webelement.esgadminportal.repo.SmtpRepo;
 import com.webelement.esgadminportal.repo.UserLoginRepository;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class AuthService {
 
-	@Autowired
-	private CommonFunction commonFunction;
-	@Autowired
-	UserLoginRepository userLoginRepository;
-	
-	@Autowired
-	PasswordService passwordService;
-
-	@Autowired
-	private JwtUtil jwtUtil;
-
-	@Autowired
-	private MyUserDetailsService detailsService;
-	@Value("${ipflag:}")
-	private String ipFlag;
-
-	@Autowired
-	private MailService mailService;
-
-	@Autowired
-	private MailLogRepo logRepo;
-
-	@Autowired
-	private SmtpRepo smtpRepo;
-
-	@Autowired
-	private UserAccessLogService accessLogService;
+	private final CommonFunction commonFunction;
+	private final UserLoginRepository userLoginRepository;
+	private final PasswordService passwordService;	
+	private final JwtUtil jwtUtil;
+	private final MyUserDetailsService detailsService;
+	private final MailService mailService;
+	private final MailLogRepo logRepo;
+	private final SmtpRepo smtpRepo;
+	private final UserAccessLogService accessLogService;
 
 	@Value("${file_maillog:}")
 	private String file_maillog;
 	@Value("${paths:}")
 	private String paths;
+	@Value("${ipflag:}")
+	private final String ipFlag;
 
 	public ResponseEntity<ResponseApi<LoginResponse>> login(LoginRequest request, HttpSession session,
 			HttpServletRequest httpRequest) throws Exception {

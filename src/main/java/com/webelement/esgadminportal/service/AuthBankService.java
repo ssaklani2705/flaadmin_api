@@ -35,39 +35,23 @@ import com.webelement.esgadminportal.repo.BankUserRepo;
 import com.webelement.esgadminportal.repo.MailLogRepo;
 import com.webelement.esgadminportal.repo.SmtpRepo;
 
+import lombok.RequiredArgsConstructor;
+
 
 @Service
+@RequiredArgsConstructor
 public class AuthBankService {
-
-	@Autowired
-	private CommonFunction commonFunction;
-//	@Autowired
-//	IpAddressEntityRepo ipAddressEntityRepo;
-//	@Autowired
-//	UserLoginRepository userLoginRepository;
-
-	@Autowired
-	private JwtUtil jwtUtil;
-
-	@Autowired
-	private MyUserDetailsService detailsService;
+	private final CommonFunction commonFunction;
+	private final JwtUtil jwtUtil;
+	private final MyUserDetailsService detailsService;
+	private final BankUserRepo bankUserRepo;
+	private final BankRepo bankRepo;
+	private final UserAccessLogService accessLogService;
+	private final MailService mailService;
+	private final PasswordService passwordService;
+	private final SmtpRepo smtpRepo;
+	private final MailLogRepo logRepo;
 	
-	@Autowired
-	private BankUserRepo bankUserRepo;
-	@Autowired
-	private BankRepo bankRepo;
-	@Autowired
-	UserAccessLogService accessLogService;
-	@Autowired
-	MailService mailService;
-	
-	@Autowired
-	private PasswordService passwordService;
-	
-	@Autowired
-	SmtpRepo smtpRepo;
-	@Autowired
-	MailLogRepo logRepo;
 
 	@Value("${ipflag:}")
 	private String ipFlag;

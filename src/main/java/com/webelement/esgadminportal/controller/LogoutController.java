@@ -17,31 +17,24 @@ import org.springframework.web.bind.annotation.RestController;
 import com.webelement.esgadminportal.common.ApiResponse;
 import com.webelement.esgadminportal.common.RefreshTokenResponse;
 import com.webelement.esgadminportal.jwttoken.JwtUtil;
+import com.webelement.esgadminportal.service.AuthService;
 import com.webelement.esgadminportal.service.JwtService;
 import com.webelement.esgadminportal.service.TokenBlacklistService;
 import com.webelement.esgadminportal.service.UserAccessLogService;
 
+import lombok.RequiredArgsConstructor;
+
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/auth")
-@CrossOrigin(origins = { "http://localhost:4200", "https://www.iba.org.in", "http://192.168.0.173:4200/",
-		"http://192.168.0.100:4200" })
+@CrossOrigin(origins = "${app.cors.allowed-origins}")
 public class LogoutController {
 
 	private final JwtUtil jwtUtil;
 	private final TokenBlacklistService tokenBlacklistService;
-
-	@Autowired
-	private UserAccessLogService accessLogService;
-	
-	@Autowired
-	private JwtService jwtService;
-
-	public LogoutController(JwtUtil jwtUtil, TokenBlacklistService tokenBlacklistService) {
-		this.jwtUtil = jwtUtil;
-		this.tokenBlacklistService = tokenBlacklistService;
-	}
-
+	private final UserAccessLogService accessLogService;
+	private final JwtService jwtService;
 
 	
 	@PostMapping("/logout")

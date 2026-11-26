@@ -18,14 +18,17 @@ import com.webelement.esgadminportal.common.MailLogDTO;
 import com.webelement.esgadminportal.entity.MailLogEntity;
 import com.webelement.esgadminportal.repo.MailLogRepo;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class MailLogService {
     
 	@Value("${file_maillog:}")
 	private String file_maillog;
 	
-    @Autowired
-    MailLogRepo mailLogRepo;
+    
+    private final MailLogRepo mailLogRepo;
     
     public Page<MailLogDTO> getMailLogDetails(int page, int size, String search) {
         Pageable pageable = PageRequest.of(page, size);

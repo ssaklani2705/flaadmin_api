@@ -33,21 +33,19 @@ import com.webelement.esgadminportal.repo.PermissionRepo;
 import com.webelement.esgadminportal.repo.SmtpRepo;
 import com.webelement.esgadminportal.repo.UserLoginRepository;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class UserManagementService {
 
-	@Autowired
-	private UserLoginRepository loginRepository;
-	@Autowired
-	private CommonFunction commonFunction;
-	@Autowired
-	private PermissionRepo permissionRepo;
-	@Autowired
-	private SmtpRepo smtpRepo;
-	@Autowired
-	private MailService mailService;
-	@Autowired
-	private MailLogRepo mailLogRepo;
+	
+	private final UserLoginRepository loginRepository;
+	private final CommonFunction commonFunction;
+	private final PermissionRepo permissionRepo;
+	private final SmtpRepo smtpRepo;
+	private final MailService mailService;
+	private final MailLogRepo mailLogRepo;
 
 	@Value("${paths:}")
 	private String paths;

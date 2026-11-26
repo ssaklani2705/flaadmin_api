@@ -23,16 +23,22 @@ import com.webelement.esgadminportal.common.BankInfoDTO;
 import com.webelement.esgadminportal.common.ResponseApi;
 import com.webelement.esgadminportal.common.TypeDTO;
 import com.webelement.esgadminportal.entity.BankEntity;
+import com.webelement.esgadminportal.jwttoken.JwtUtil;
+import com.webelement.esgadminportal.service.AuthService;
 import com.webelement.esgadminportal.service.BankService;
+import com.webelement.esgadminportal.service.JwtService;
+import com.webelement.esgadminportal.service.TokenBlacklistService;
+
+import lombok.RequiredArgsConstructor;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/admin")
-@CrossOrigin(origins = { "http://localhost:4200", "https://www.iba.org.in", "http://192.168.0.173:4200",
-		"http://192.168.0.100:4200", "http://192.168.0.100:8080" })
+@CrossOrigin(origins = "${app.cors.allowed-origins}")
 public class BankController {
 
 	@Autowired
-	private BankService bankService;
+	private final BankService bankService;
 
 	@GetMapping("/getBankDetails")
 	public Map<String, Object> findBankDetails(@RequestParam() int page, @RequestParam() int size,

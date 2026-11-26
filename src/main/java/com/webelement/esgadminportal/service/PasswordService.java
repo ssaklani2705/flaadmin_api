@@ -9,15 +9,16 @@ import org.springframework.stereotype.Service;
 
 import com.webelement.esgadminportal.common.CommonFunction;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class PasswordService {
 
 	private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(10);
 	private final CommonFunction commonFunction;
 
-	public PasswordService(@Lazy CommonFunction commonFunction) {
-		this.commonFunction = commonFunction;
-	}
+	
 
 	public String hash(String raw) {
 		return encoder.encode(raw);
