@@ -26,7 +26,7 @@ import com.webelement.esgadminportal.Mapper.DataMapper;
 import com.webelement.esgadminportal.common.ApiResponse;
 import com.webelement.esgadminportal.common.CommonFunction;
 import com.webelement.esgadminportal.common.DataDetailDTO;
-import com.webelement.esgadminportal.common.DataExcelParser;
+import com.webelement.esgadminportal.common.DataExcelParserold;
 import com.webelement.esgadminportal.common.DataInfoDTO;
 import com.webelement.esgadminportal.entity.DataEntity;
 import com.webelement.esgadminportal.entity.StateEntity;
@@ -317,10 +317,10 @@ public Map<String, Object> uploadDataExcel(MultipartFile file, Integer addedBy, 
             .map(StateEntity::getName)
             .collect(Collectors.toSet());
 
-    DataExcelParser.ParseResult result;
+    DataExcelParserold.ParseResult result;
     try (InputStream in = file.getInputStream()) {
         // Rows are saved as Draft so the user can review and Submit from the Edit page.
-        result = DataExcelParser.parse(in, stateNames, STATUS_DRAFT, addedBy, bankId);
+        result = DataExcelParserold.parse(in, stateNames, STATUS_DRAFT, addedBy, bankId);
     } catch (IOException | RuntimeException e) {
         e.printStackTrace();   // or log.error("Unable to parse uploaded Excel", e);
         throw new IllegalArgumentException(
