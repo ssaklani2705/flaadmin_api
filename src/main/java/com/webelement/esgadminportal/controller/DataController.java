@@ -31,18 +31,14 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/admin/data")
-<<<<<<< HEAD
+
 @CrossOrigin(origins = { "http://localhost:4200", "https://www.iba.org.in", "http://192.168.0.173:4200","http://192.168.0.100:4200", "http://192.168.0.100:8080" })
-=======
-@CrossOrigin(origins = { "http://localhost:4200", "https://www.iba.org.in", "http://192.168.0.173:4200",
-		"http://192.168.0.100:4200", "http://192.168.0.100:8080" })
->>>>>>> 8fea4c3defa86b7dfc98edd5f07d6c2295e5724b
+
 public class DataController {
 	private final DataService dataService;
 	private final DataRepo dataRepo;
 	private final UserTransactionRepo transactionRepo;
 
-<<<<<<< HEAD
 	@PostMapping(value = "/uploadDataExcel", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 	public ResponseEntity<Map<String, Object>> uploadDataExcel(@RequestParam("file") MultipartFile file,
 			@RequestParam(value = "addedBy", required = false) Integer addedBy,
@@ -67,35 +63,6 @@ public class DataController {
 			return ResponseEntity.status(500).body(body);
 		}
 	}
-=======
-@PostMapping(value = "/uploadDataExcel", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-public ResponseEntity<Map<String, Object>> uploadDataExcel(
-        @RequestParam("file") MultipartFile file,
-        @RequestParam(value = "addedBy", required = false) Integer addedBy,
-        @RequestParam(value = "bankId", required = false) Integer bankId,
-        HttpServletRequest httpRequest) {
-
-    try {
-        return ResponseEntity.ok(dataService.uploadDataExcel(file, addedBy, bankId, httpRequest));
-
-    } catch (IllegalArgumentException e) {
-    	System.out.println("Excel upload rejected: {}"+ e.getMessage());
-        Map<String, Object> body = new LinkedHashMap<>();
-        body.put("success", false);
-        body.put("message", e.getMessage());
-        return ResponseEntity.badRequest().body(body);
-
-    } catch (Exception e) {
-    	System.out.println("Excel upload failed"+ e);
-
-        Map<String, Object> body = new LinkedHashMap<>();
-        body.put("success", false);
-        body.put("message", "Upload failed. Please try again.");
-        return ResponseEntity.status(500).body(body);
-    }
-}
-
->>>>>>> 8fea4c3defa86b7dfc98edd5f07d6c2295e5724b
 
 	@GetMapping("/list")
 	public Map<String, Object> findDataDetails(@RequestParam(defaultValue = "0") int page,
