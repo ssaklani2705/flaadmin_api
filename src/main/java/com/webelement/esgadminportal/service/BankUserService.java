@@ -37,10 +37,6 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class BankUserService {
-
-
-
-	
 	private final BankUserRepo bankUserRepo;
 	
 	private final CommonFunction commonFunction;

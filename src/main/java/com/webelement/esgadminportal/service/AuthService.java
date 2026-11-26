@@ -57,7 +57,7 @@ public class AuthService {
 	@Value("${paths:}")
 	private String paths;
 	@Value("${ipflag:}")
-	private final String ipFlag;
+	private  String ipFlag;
 
 	public ResponseEntity<ResponseApi<LoginResponse>> login(LoginRequest request, HttpSession session,
 			HttpServletRequest httpRequest) throws Exception {
