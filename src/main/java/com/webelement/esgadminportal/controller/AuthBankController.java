@@ -36,7 +36,7 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/authuser")
-@CrossOrigin(origins = "${app.cors.allowed-origins}")
+//@CrossOrigin(origins = "${app.cors.allowed-origins}")
 public class AuthBankController {
 	
 	private final AuthBankService authService;

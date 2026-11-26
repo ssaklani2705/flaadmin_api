@@ -28,7 +28,7 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/auth")
-@CrossOrigin(origins = "${app.cors.allowed-origins}")
+//@CrossOrigin(origins = "${app.cors.allowed-origins}")
 public class LogoutController {
 
 	private final JwtUtil jwtUtil;

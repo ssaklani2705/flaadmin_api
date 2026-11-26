@@ -34,7 +34,7 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/admin")
-@CrossOrigin(origins = "${app.cors.allowed-origins}")
+//@CrossOrigin(origins = "${app.cors.allowed-origins}")
 public class BankController {
 	private final BankService bankService;
 

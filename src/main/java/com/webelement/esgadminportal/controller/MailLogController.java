@@ -24,7 +24,7 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/mailLog")
-@CrossOrigin(origins = "${app.cors.allowed-origins}")
+//@CrossOrigin(origins = "${app.cors.allowed-origins}")
 public class MailLogController {
 	private final MailLogService mailLogService;
 

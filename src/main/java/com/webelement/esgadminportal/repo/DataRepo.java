@@ -72,4 +72,7 @@ public interface DataRepo extends JpaRepository<DataEntity, Integer> {
 			+ "GROUP BY d.status " + "ORDER BY d.status")
 	List<Object[]> countByStatusAndBankId(@Param("bankId") Integer bankId);
 	
+	
+	@Query("SELECT DISTINCT d.typeOfFraud FROM DataEntity d WHERE d.typeOfFraud IS NOT NULL AND d.status = 1 ORDER BY d.typeOfFraud")
+	List<String> findDistinctFraudTypes();
 }

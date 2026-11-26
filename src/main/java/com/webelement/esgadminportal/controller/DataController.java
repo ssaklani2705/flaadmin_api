@@ -31,8 +31,7 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/admin/data")
-@CrossOrigin(origins = "${app.cors.allowed-origins}")
-
+//@CrossOrigin(origins = "${app.cors.allowed-origins}")
 public class DataController {
 	private final DataService dataService;
 	private final DataRepo dataRepo;
@@ -193,4 +192,10 @@ public class DataController {
 			return dto;
 		}).collect(Collectors.toList());
 	}
+	
+	
+	@GetMapping("/fraud-types")
+    public ResponseEntity<List<String>> getFraudTypes() {
+        return ResponseEntity.ok(dataRepo.findDistinctFraudTypes());
+    }
 }
