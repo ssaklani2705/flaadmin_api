@@ -211,6 +211,16 @@ public class DataService {
 	            entity = dataRepo.findById(request.getId())
 	                    .orElseThrow(() ->
 	                            new IllegalArgumentException("Data record not found"));
+	            
+	         // Only Draft (1) and Approval Pending (2) records can be edited.
+	            Integer currentStatus = entity.getStatus();
+
+	            if (Objects.equals(currentStatus, 3)) {
+	                throw new IllegalArgumentException("Approved record cannot be edited");
+	            }
+	            if (Objects.equals(currentStatus, 4)) {
+	                throw new IllegalArgumentException("Deleted record cannot be edited");
+	            }
 
 	            // Copy all form fields, preserving system-managed fields.
 	            BeanUtils.copyProperties(
