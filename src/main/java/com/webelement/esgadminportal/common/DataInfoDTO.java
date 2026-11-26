@@ -38,6 +38,8 @@ public class DataInfoDTO {
 	private Integer addedBy;
 	
 	private String bankName;
+	
+	  private Long noOfDays;
 
 	public DataInfoDTO(Integer dataId, String entityCode, String state, String branchCategory, String perpetratorStatus,
 			String accountType, String industrySector, String areaOfOperation, String fraudType, BigDecimal totalAmount,

@@ -18,7 +18,7 @@ import com.webelement.esgadminportal.entity.DataEntity;
 
 @Repository
 public interface DataRepo extends JpaRepository<DataEntity, Integer> {
-	
+
 //	@Query(value = "SELECT DATE_FORMAT(t.ts_regdate, '%d-%m-%Y %h:%i %p') AS entryDate, " +
 //            "CASE WHEN t.i_userid = -1 THEN bu.s_name ELSE ul.s_firstname END AS name, " +
 //            "t.s_action AS action, t.i_userid AS userId, t.s_flag AS flag " +
@@ -32,12 +32,16 @@ public interface DataRepo extends JpaRepository<DataEntity, Integer> {
 //    nativeQuery = true)
 //List<Object[]> getTransactionLogs(@Param("moduleId") int moduleId,
 //                               @	("recordId") Integer recordId);
-	
-	
-	 @Modifying
-	    @Transactional
-	    @Query("UPDATE DataEntity d SET d.status = 3 WHERE d.id = :dataId AND d.status = 2")
-	    int approveData(@Param("dataId") Integer dataId);
+
+	@Modifying
+	@Transactional
+	@Query("UPDATE DataEntity d SET d.status = 3 WHERE d.id = :dataId AND d.status = 2")
+	int approveData(@Param("dataId") Integer dataId);
+
+	@Modifying
+	@Transactional
+	@Query("UPDATE DataEntity d SET d.status = 4 WHERE d.id = :dataId AND d.status IN (1, 2)")
+	int softDeleteData(@Param("dataId") Integer dataId);
 
 	@Query("SELECT new com.webelement.esgadminportal.common.DataInfoDTO("
 			+ "d.id, d.code, d.state, d.catOfBranch, d.statusOfPerpetrator, d.typeOfAccount, d.secOfAcc, "
@@ -51,20 +55,18 @@ public interface DataRepo extends JpaRepository<DataEntity, Integer> {
 			+ "     LOWER(d.statusOfPerpetrator) LIKE LOWER(CONCAT('%', :search, '%')) OR "
 			+ "     LOWER(d.typeOfFraud) LIKE LOWER(CONCAT('%', :search, '%'))) " + "ORDER BY d.id DESC")
 	Page<DataInfoDTO> findDataDetails(Pageable pageable, @Param("statusIndex") int statusIndex,
-			@Param("search") String search,@Param("bankId") int bankId);
+			@Param("search") String search, @Param("bankId") int bankId);
 
 	@EntityGraph(attributePaths = { "bank" })
-	@Query(value = "SELECT d FROM DataEntity d "
-	        + "WHERE d.id > 0 AND (:statusIndex = 0 OR d.status = :statusIndex) "
-	        + "AND (:bankId = 0 OR d.bankId = :bankId) "
-	        + "AND (:search IS NULL OR :search = '' OR "
-	        + "     LOWER(d.code) LIKE LOWER(CONCAT('%', :search, '%')) OR "
-	        + "     LOWER(d.state) LIKE LOWER(CONCAT('%', :search, '%')) OR "
-	        + "     LOWER(d.catOfBranch) LIKE LOWER(CONCAT('%', :search, '%')) OR "
-	        + "     LOWER(d.statusOfPerpetrator) LIKE LOWER(CONCAT('%', :search, '%')) OR "
-	        + "     LOWER(d.typeOfFraud) LIKE LOWER(CONCAT('%', :search, '%'))) "
-	        + "ORDER BY d.id DESC")
-	Page<DataEntity> dataAdminIndexList(Pageable pageable,@Param("statusIndex") int statusIndex,@Param("search") String search,@Param("bankId") int bankId);
+	@Query(value = "SELECT d FROM DataEntity d " + "WHERE d.id > 0 AND (:statusIndex = 0 OR d.status = :statusIndex) "
+			+ "AND (:bankId = 0 OR d.bankId = :bankId) " + "AND (:search IS NULL OR :search = '' OR "
+			+ "     LOWER(d.code) LIKE LOWER(CONCAT('%', :search, '%')) OR "
+			+ "     LOWER(d.state) LIKE LOWER(CONCAT('%', :search, '%')) OR "
+			+ "     LOWER(d.catOfBranch) LIKE LOWER(CONCAT('%', :search, '%')) OR "
+			+ "     LOWER(d.statusOfPerpetrator) LIKE LOWER(CONCAT('%', :search, '%')) OR "
+			+ "     LOWER(d.typeOfFraud) LIKE LOWER(CONCAT('%', :search, '%'))) " + "ORDER BY d.id DESC")
+	Page<DataEntity> dataAdminIndexList(Pageable pageable, @Param("statusIndex") int statusIndex,
+			@Param("search") String search, @Param("bankId") int bankId);
 
 	@Query("SELECT d.status, COUNT(d) " + "FROM DataEntity d " + "WHERE d.bankId = :bankId OR :bankId = 0 "
 			+ "GROUP BY d.status " + "ORDER BY d.status")
