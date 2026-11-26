@@ -41,7 +41,6 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/auth")
-@CrossOrigin(origins ="${app.cors.allowed-origins}", allowCredentials = "true")
 public class AuthController {
 	private final AuthService authService;
 	private final TokenBlacklistService blacklistService;
@@ -214,3 +213,7 @@ public class AuthController {
 		return ResponseEntity.ok(new ResponseApi<String>(true, message, null));
 	}
 }
+
+
+
+
