@@ -54,7 +54,7 @@ public interface DataRepo extends JpaRepository<DataEntity, Integer> {
 			+ "     LOWER(d.state) LIKE LOWER(CONCAT('%', :search, '%')) OR "
 			+ "     LOWER(d.catOfBranch) LIKE LOWER(CONCAT('%', :search, '%')) OR "
 			+ "     LOWER(d.statusOfPerpetrator) LIKE LOWER(CONCAT('%', :search, '%')) OR "
-			+ "     LOWER(d.typeOfFraud) LIKE LOWER(CONCAT('%', :search, '%'))) " + "ORDER BY d.id DESC")
+			+ "     LOWER(d.typeOfFraud) LIKE LOWER(CONCAT('%', :search, '%'))) " + "ORDER BY d.status,d.regDate DESC")
 	Page<DataInfoDTO> findDataDetails(Pageable pageable, @Param("statusIndex") int statusIndex,
 			@Param("search") String search, @Param("bankId") int bankId, @Param("catOfBranch") String catOfBranch);
 
@@ -76,4 +76,15 @@ public interface DataRepo extends JpaRepository<DataEntity, Integer> {
 	
 	@Query("SELECT DISTINCT d.typeOfFraud FROM DataEntity d WHERE d.typeOfFraud IS NOT NULL AND d.status = 1 ORDER BY d.typeOfFraud")
 	List<String> findDistinctFraudTypes();
+	
+	
+	
+	
+	@Query("SELECT d.id FROM DataEntity d WHERE d.bankId = :bankId AND d.status = 1")
+	List<Integer> findActiveDataIdsByBankId(@Param("bankId") Integer bankId);
+
+
+	@Modifying
+	@Query("UPDATE DataEntity d SET d.status = 4 WHERE d.bankId = :bankId AND d.status = 1")
+	int softDeleteAllByBankId(@Param("bankId") Integer bankId);
 }

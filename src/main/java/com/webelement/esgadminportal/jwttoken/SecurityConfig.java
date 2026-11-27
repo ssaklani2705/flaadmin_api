@@ -20,7 +20,7 @@ public class SecurityConfig {
 		http.csrf().disable().cors() // Enable CORS
 				.and().authorizeRequests().antMatchers(HttpMethod.OPTIONS, "/**").permitAll() // Allow preflight
 				.antMatchers("/auth/**").permitAll() // Login & Refresh token
-				.antMatchers("/admin/**").permitAll()
+			//	.antMatchers("/admin/**").permitAll()
 				.antMatchers("/authuser/**").permitAll().anyRequest().authenticated() // Protect all other APIs
 				.and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 

@@ -91,7 +91,11 @@ public interface BankUserRepo extends JpaRepository<BankUserEntity, Integer> {
 	            @Param("email") String email,
 	            @Param("userId") Integer userId
 	    );
-
+//	 @Query("SELECT b.bankId FROM BankUserEntity b WHERE b.bankUserId = :bankUserId")
+//	 Integer findBankIdByBankUserId(@Param("bankUserId") int bankUserId);
+	 
+	 @Query("SELECT d.id FROM DataEntity d WHERE d.bankId = :bankId AND d.status = 1")
+	 List<Integer> findActiveDataIdsByBankId(@Param("bankId") Integer bankId);
 	
 	 @Query("SELECT b.bankId FROM BankUserEntity b WHERE b.bankUserId = :bankUserId")
 	 Integer findBankIdByBankUserId(@Param("bankUserId") int bankUserId);
