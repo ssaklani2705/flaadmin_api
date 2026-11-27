@@ -28,7 +28,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import static com.webelement.esgadminportal.common.DataExcelAllowedValues.*;
-
+import java.time.ZoneId;
 
 /**
  * Reads and validates the Data upload template (sheet "Data", 37 columns, row 1 = headers).
@@ -42,6 +42,8 @@ public class DataExcelParser {
     private static final String SHEET_NAME = "Data";
     private static final int MAX_TEXT = 1000;
     private static final Pattern AMOUNT = Pattern.compile("^\\d{1,12}$");
+    
+    private static final ZoneId IST = ZoneId.of("Asia/Kolkata");
 
     private static final DateTimeFormatter[] DATE_FORMATS = {
         DateTimeFormatter.ofPattern("dd-MM-uuuu").withResolverStyle(ResolverStyle.STRICT),
@@ -84,7 +86,7 @@ public class DataExcelParser {
 
     static {
         // Older Master sheet had this typo; accept it.
-        DETECTIONS.put(normalize("Cusomer Complaints"), "Customer Complaints");
+        DETECTIONS.put(normalize("Cusomer Complaints"), "Cusomer Complaints");
     }
 
     // ---------------------------------------------------------------- result types
@@ -149,10 +151,10 @@ public class DataExcelParser {
                 }
 
                 result.totalRows++;
-                if (result.totalRows > MAX_ROWS) {
-                    result.addError(0, "File", "Maximum " + MAX_ROWS + " rows are allowed per upload.");
-                    break;
-                }
+//                if (result.totalRows > MAX_ROWS) {
+//                    result.addError(0, "File", "Maximum " + MAX_ROWS + " rows are allowed per upload.");
+//                    break;
+//                }
 
                 int errorsBefore = result.errorCount;
                 DataEntity entity = readRow(r, states, status, addedBy, bankId);
@@ -398,6 +400,36 @@ public class DataExcelParser {
             return canonical;
         }
 
+//        BigDecimal amount(int c, boolean required, boolean mustBePositive) {
+//            Cell cell = cell(c);
+//            String s = raw(c);
+//            if (cell == null || s == null) {
+//                if (required) {
+//                    error(c, "is required");
+//                }
+//                return null;
+//            }
+//            if (cell.getCellType() == CellType.NUMERIC) {
+//                try {
+//                    s = BigDecimal.valueOf(cell.getNumericCellValue()).toBigIntegerExact().toString();
+//                } catch (ArithmeticException ex) {
+//                    error(c, "must be a whole number (digits only, maximum 12 digits)");
+//                    return null;
+//                }
+//            }
+//            if (!AMOUNT.matcher(s).matches()) {
+//                error(c, "must contain digits only (maximum 12 digits)");
+//                return null;
+//            }
+//            BigDecimal value = new BigDecimal(s);
+//            if (mustBePositive && value.signum() <= 0) {
+//                error(c, "must be greater than zero");
+//                return null;
+//            }
+//            return value;
+//        }
+        
+        
         BigDecimal amount(int c, boolean required, boolean mustBePositive) {
             Cell cell = cell(c);
             String s = raw(c);
@@ -414,6 +446,9 @@ public class DataExcelParser {
                     error(c, "must be a whole number (digits only, maximum 12 digits)");
                     return null;
                 }
+            } else {
+                // Text cell like "1,00,00,00,00,000": remove commas and spaces before validating
+                s = s.replace(",", "").replaceAll("\\s+", "");
             }
             if (!AMOUNT.matcher(s).matches()) {
                 error(c, "must contain digits only (maximum 12 digits)");
@@ -426,8 +461,17 @@ public class DataExcelParser {
             }
             return value;
         }
-
+        
         LocalDate date(int c, boolean required) {
+            LocalDate d = parseDate(c, required);
+            if (d != null && d.isAfter(LocalDate.now(IST))) {
+                error(c, "must not be a future date");
+                return null;
+            }
+            return d;
+        }
+
+        private LocalDate parseDate(int c, boolean required) {
             Cell cell = cell(c);
             String s = raw(c);
             if (cell == null || s == null) {
@@ -453,5 +497,32 @@ public class DataExcelParser {
             error(c, "must be a valid date (dd-MM-yyyy)");
             return null;
         }
+
+//        LocalDate date(int c, boolean required) {
+//            Cell cell = cell(c);
+//            String s = raw(c);
+//            if (cell == null || s == null) {
+//                if (required) {
+//                    error(c, "is required");
+//                }
+//                return null;
+//            }
+//            if (cell.getCellType() == CellType.NUMERIC) {
+//                if (DateUtil.isCellDateFormatted(cell)) {
+//                    return cell.getLocalDateTimeCellValue().toLocalDate();
+//                }
+//                error(c, "must be a valid date (dd-MM-yyyy)");
+//                return null;
+//            }
+//            for (DateTimeFormatter f : DATE_FORMATS) {
+//                try {
+//                    return LocalDate.parse(s, f);
+//                } catch (Exception ignored) {
+//                    // try next format
+//                }
+//            }
+//            error(c, "must be a valid date (dd-MM-yyyy)");
+//            return null;
+//        }
     }
 }

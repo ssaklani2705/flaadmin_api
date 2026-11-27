@@ -292,7 +292,7 @@ public class DataService {
 
 	    
 
-		private static final long EXCEL_MAX_SIZE = 5L * 1024 * 1024; // 5 MB
+		private static final long EXCEL_MAX_SIZE = 10L * 1024 * 1024; // 5 MB
 		private static final int STATUS_DRAFT = 1;
 
 
@@ -312,7 +312,7 @@ public Map<String, Object> uploadDataExcel(MultipartFile file, Integer addedBy, 
         throw new IllegalArgumentException("Only .xlsx files are allowed");
     }
     if (file.getSize() > EXCEL_MAX_SIZE) {
-        throw new IllegalArgumentException("File size must not exceed 5 MB");
+        throw new IllegalArgumentException("File size must not exceed 10 MB");
     }
 
     // TODO: use your own state repository / entity here (the same source as getAllStates()).
@@ -369,8 +369,8 @@ public int softDeleteAllByBankUserId(
     Integer bankId =
             bankUserRepo.findBankIdByBankUserId(userId);
 
-    System.out.println("Bank User ID: " + userId);
-    System.out.println("Resolved Bank ID: " + bankId);
+//    System.out.println("Bank User ID: " + userId);
+//    System.out.println("Resolved Bank ID: " + bankId);
 
     if (bankId == null) {
         return 0;
@@ -379,13 +379,13 @@ public int softDeleteAllByBankUserId(
     List<Integer> dataIds =
             dataRepo.findActiveDataIdsByBankId(bankId);
 
-    System.out.println("Active Data IDs: " + dataIds);
+//    System.out.println("Active Data IDs: " + dataIds);
 
     if (dataIds.isEmpty()) {
         return 0;
     }
 
-    int updatedRows = dataRepo.softDeleteAllByBankId(bankId);
+    int updatedRows = dataRepo.deleteAllByBankId(bankId);
 
     System.out.println("Updated Rows: " + updatedRows);
 

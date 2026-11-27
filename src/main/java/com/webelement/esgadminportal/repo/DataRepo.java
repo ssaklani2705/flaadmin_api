@@ -54,10 +54,10 @@ public interface DataRepo extends JpaRepository<DataEntity, Integer> {
 			+ "     LOWER(d.state) LIKE LOWER(CONCAT('%', :search, '%')) OR "
 			+ "     LOWER(d.catOfBranch) LIKE LOWER(CONCAT('%', :search, '%')) OR "
 			+ "     LOWER(d.statusOfPerpetrator) LIKE LOWER(CONCAT('%', :search, '%')) OR "
-			+ "     LOWER(d.typeOfFraud) LIKE LOWER(CONCAT('%', :search, '%'))) " + "ORDER BY d.status,d.regDate DESC")
+			+ "     LOWER(d.typeOfFraud) LIKE LOWER(CONCAT('%', :search, '%'))) " + "ORDER BY CASE WHEN d.status = 4 THEN '2025-12-31 00:00:00' ELSE d.regDate END DESC")
 	Page<DataInfoDTO> findDataDetails(Pageable pageable, @Param("statusIndex") int statusIndex,
 			@Param("search") String search, @Param("bankId") int bankId, @Param("catOfBranch") String catOfBranch);
-
+//ORDER BY d.status,d.regDate DESC
 	@EntityGraph(attributePaths = { "bank" })
 	@Query(value = "SELECT d FROM DataEntity d " + "WHERE d.id > 0 AND (:statusIndex = 0 OR d.status = :statusIndex) "
 			+ "AND (:bankId = 0 OR d.bankId = :bankId) " + "AND (:search IS NULL OR :search = '' OR "
@@ -84,7 +84,11 @@ public interface DataRepo extends JpaRepository<DataEntity, Integer> {
 	List<Integer> findActiveDataIdsByBankId(@Param("bankId") Integer bankId);
 
 
-	@Modifying
-	@Query("UPDATE DataEntity d SET d.status = 4 WHERE d.bankId = :bankId AND d.status = 1")
-	int softDeleteAllByBankId(@Param("bankId") Integer bankId);
+//	@Modifying
+//	@Query("UPDATE DataEntity d SET d.status = 4 WHERE d.bankId = :bankId AND d.status = 1")
+//	int softDeleteAllByBankId(@Param("bankId") Integer bankId);
+	
+	@Modifying(clearAutomatically = true, flushAutomatically = true)
+	@Query("DELETE FROM DataEntity d WHERE d.bankId = :bankId AND d.status = 1")
+	int deleteAllByBankId(@Param("bankId") Integer bankId);
 }
