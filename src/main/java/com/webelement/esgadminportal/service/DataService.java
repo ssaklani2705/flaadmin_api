@@ -360,6 +360,48 @@ public Map<String, Object> uploadDataExcel(MultipartFile file, Integer addedBy, 
     return response;
 }
 	    
-	    
+@Transactional
+public int softDeleteAllByBankUserId(
+        Integer bankUserId,
+        Integer userId,
+        HttpServletRequest httpRequest) {
+
+    Integer bankId =
+            bankUserRepo.findBankIdByBankUserId(userId);
+
+    System.out.println("Bank User ID: " + userId);
+    System.out.println("Resolved Bank ID: " + bankId);
+
+    if (bankId == null) {
+        return 0;
+    }
+
+    List<Integer> dataIds =
+            dataRepo.findActiveDataIdsByBankId(bankId);
+
+    System.out.println("Active Data IDs: " + dataIds);
+
+    if (dataIds.isEmpty()) {
+        return 0;
+    }
+
+    int updatedRows = dataRepo.softDeleteAllByBankId(bankId);
+
+    System.out.println("Updated Rows: " + updatedRows);
+
+    for (Integer dataId : dataIds) {
+        commonFunction.createHistoryAccess(
+                userId,
+                commonFunction.resolveClientIp(httpRequest),
+                commonFunction.getLocalIp(),
+                "Data Deleted",
+                2,
+                dataId,
+                userId
+        );
+    }
+
+    return updatedRows;
+}
 	    
 }

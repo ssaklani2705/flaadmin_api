@@ -198,4 +198,25 @@ public class DataController {
     public ResponseEntity<List<String>> getFraudTypes() {
         return ResponseEntity.ok(dataRepo.findDistinctFraudTypes());
     }
+	
+	@PostMapping("/delete-all/{bankUserId}")
+	public Map<String, Object> deleteAllData(
+	        @PathVariable Integer bankUserId,
+	        @RequestParam(value = "userId", required = false) Integer userId,
+	        HttpServletRequest httpRequest) {
+
+	    Map<String, Object> response = new HashMap<>();
+
+	    int deletedCount = dataService.softDeleteAllByBankUserId(
+	            bankUserId, userId, httpRequest);
+
+	    response.put("data", deletedCount > 0);
+	    response.put("totalElements", deletedCount);
+	    response.put("message",
+	            deletedCount > 0
+	                    ? "All records deleted successfully"
+	                    : "No active records found");
+
+	    return response;
+	}
 }
