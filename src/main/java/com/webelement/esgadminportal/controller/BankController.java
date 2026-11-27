@@ -39,9 +39,10 @@ public class BankController {
 	private final BankService bankService;
 
 	@GetMapping("/getBankDetails")
-	public Map<String, Object> findBankDetails(@RequestParam() int page, @RequestParam() int size,
-			@RequestParam() int statusIndex, @RequestParam() String search) {
-		Page<BankInfoDTO> userPage = bankService.findBankDetails(page, size, statusIndex, search);
+	public Map<String, Object> findBankDetails(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size,
+
+			@RequestParam() int statusIndex, @RequestParam(defaultValue = "") String search,@RequestParam(defaultValue = "0") int associationId) {
+		Page<BankInfoDTO> userPage = bankService.findBankDetails(page, size, statusIndex,search, associationId);
 		Map<String, Object> response = new HashMap<>();
 		response.put("data", userPage.getContent());
 		response.put("totalElements", userPage.getTotalElements());

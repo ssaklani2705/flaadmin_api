@@ -5,9 +5,11 @@ import javax.persistence.*;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 @Entity
 @Table(name = "t_bank")
@@ -25,6 +27,9 @@ public class BankEntity {
 
 	@Column(name = "i_typeid")
 	private Integer typeId;
+	
+	@Column(name = "i_associationid")
+	private Integer associationId;
 
 	@Column(name = "s_name")
 	private String name;
@@ -40,5 +45,11 @@ public class BankEntity {
 
 	@Column(name = "ts_moddate")
 	private Timestamp modDate;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "i_associationid", referencedColumnName = "i_id", insertable = false, updatable = false)
+	@ToString.Exclude
+	@EqualsAndHashCode.Exclude
+	private AssociationEntity association;
 
 }
