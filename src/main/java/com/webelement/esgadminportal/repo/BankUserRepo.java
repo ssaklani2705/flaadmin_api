@@ -102,5 +102,15 @@ public interface BankUserRepo extends JpaRepository<BankUserEntity, Integer> {
 	 
 	 @Query(value = "SELECT s_password FROM t_bankuser WHERE i_bankuserid = :bankUserId", nativeQuery = true)
 		String findPasswordByBankUserId(@Param("bankUserId") Integer bankUserId);
+	 
+		@Query(value = "SELECT bu.i_bankuserid " + "FROM t_bankuser bu " + "WHERE LOWER(bu.s_email) = LOWER(:emailId) "
+				+ "  AND EXISTS ( " + "      SELECT 1 " + "      FROM t_bank b "
+				+ "      WHERE b.i_bankid = bu.i_bankid " + "        AND b.i_status = 1 " + "  )", nativeQuery = true)
+		List<Long> findActiveBankIdsByEmailId(@Param("emailId") String emailId);
+	 
+	 
+	 
+	 
+	 
 	
 }

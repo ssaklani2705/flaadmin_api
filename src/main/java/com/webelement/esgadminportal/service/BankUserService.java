@@ -65,12 +65,12 @@ public class BankUserService {
 	public UserInfoDTO getUserById(int bankUserId) {
 		UserInfoDTO user = bankUserRepo.getBankUserById(bankUserId);
 
-		if (user != null) {
-			// Append transaction history
-			List<TransactionEntity> history = getTransactionLogs(2, bankUserId);
-			System.out.println("history : " + history);
-			user.setTransactionhistory(history);
-		}
+//		if (user != null) {
+//			// Append transaction history
+//			List<TransactionEntity> history = getTransactionLogs(2, bankUserId);
+//			System.out.println("history : " + history);
+//			user.setTransactionhistory(history);
+//		}
 
 		return user;
 	}
@@ -105,7 +105,7 @@ public class BankUserService {
 		boolean isEdit = bankUserEntity.getBankUserId() > 0;
 		System.out.println("isEdit : " + isEdit);
 		if (!isEdit) {
-			// ADD logic - check for duplicate email
+		
 			int isDuplicateEmail = bankUserRepo.checkDuplicacy(0, bankUserEntity.getEmail());
 			if (isDuplicateEmail == 1) {
 				return ResponseEntity.status(HttpStatus.CONFLICT)
