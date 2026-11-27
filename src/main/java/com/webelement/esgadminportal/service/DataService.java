@@ -52,8 +52,7 @@ public class DataService {
 	public Page<DataInfoDTO> findDataDetails(int page, int size, int statusIndex, String search,int userId,String catOfBranch) {
 		System.out.println("userId : "+userId);
 		Integer bankId = bankUserRepo.findBankIdByBankUserId(userId);
-		System.out.println("bankId : "+bankId);
-		
+		//System.out.println("bankId : "+bankId);
 		return dataRepo.findDataDetails(PageRequest.of(page, size), statusIndex, search,bankId,catOfBranch);
 	}
 
