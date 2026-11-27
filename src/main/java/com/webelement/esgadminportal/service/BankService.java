@@ -45,8 +45,8 @@ public class BankService {
 	
 	private final ValidateData validateData;
 
-	public Page<BankInfoDTO> findBankDetails(int page, int size, int statusIndex, String search) {
-		return bankRepo.findBankDetails(PageRequest.of(page, size), statusIndex, search);
+	public Page<BankInfoDTO> findBankDetails(int page, int size, int statusIndex, String search,int associationId) {
+		return bankRepo.findBankDetails(PageRequest.of(page, size), statusIndex, search,associationId);
 	}
 
 	public BankInfoDTO getBankById(int bankId) {

@@ -51,7 +51,7 @@ public class AuthService {
 	private final MailLogRepo logRepo;
 	private final SmtpRepo smtpRepo;
 	private final UserAccessLogService accessLogService;
-
+	private final BankUserRepo bankUserRepository;
 	@Value("${file_maillog:}")
 	private String file_maillog;
 	@Value("${paths:}")
@@ -62,21 +62,20 @@ public class AuthService {
 	public ResponseEntity<ResponseApi<LoginResponse>> login(LoginRequest request, HttpSession session,
 			HttpServletRequest httpRequest) throws Exception {
 		String userCaptcha = request.getCaptcha(); // User input
-//		String serverCaptcha = request.getCaptchaAns(); // Stored in session
 		String serverCaptcha = (String) session.getAttribute("captcha");
-System.out.println("serverCaptcha : "+serverCaptcha);
-//		if (userCaptcha == null || serverCaptcha == null || !userCaptcha.equalsIgnoreCase(serverCaptcha)) {
-//			return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-//					.body(new ResponseApi<>(false, "Invalid captcha code.", null));
-//		}
-		
+
 		if (userCaptcha == null || serverCaptcha == null || !userCaptcha.equalsIgnoreCase(serverCaptcha)) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST)
 					.body(new ResponseApi<>(false, "Invalid captcha code.", null));
 		}
-
+		
 		String loginId = request.getUsername() != null ? request.getUsername() : "";
 		String password = request.getPassword() != null ? request.getPassword() : "";
+		
+		List<Long> bankIds = bankUserRepository.findActiveBankIdsByEmailId(loginId.trim());
+		if (bankIds.isEmpty()) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseApi<>(false, "You are not authorised to login. Kindly contact to IBA.", null));
+		}
 		String ip = commonFunction.resolveClientIp(httpRequest);
 		String iplocal = commonFunction.getLocalIp();
 

@@ -105,7 +105,7 @@ public class BankUserService {
 		boolean isEdit = bankUserEntity.getBankUserId() > 0;
 		System.out.println("isEdit : " + isEdit);
 		if (!isEdit) {
-			// ADD logic - check for duplicate email
+		
 			int isDuplicateEmail = bankUserRepo.checkDuplicacy(0, bankUserEntity.getEmail());
 			if (isDuplicateEmail == 1) {
 				return ResponseEntity.status(HttpStatus.CONFLICT)
