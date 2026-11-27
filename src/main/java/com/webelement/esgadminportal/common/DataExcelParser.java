@@ -177,9 +177,9 @@ public class DataExcelParser {
 
         String code = r.text(C_CODE, true, 50);
         
-        for (int c = 0; c < HEADER_KEYS.length; c++) {
-            System.out.println("DEBUG col " + c + " [" + r.columnName(c) + "] = [" + r.raw(c) + "]");
-        }
+//        for (int c = 0; c < HEADER_KEYS.length; c++) {
+//            System.out.println("DEBUG col " + c + " [" + r.columnName(c) + "] = [" + r.raw(c) + "]");
+//        }
         
         String state = r.choice(C_STATE, true, states);
         String catOfBranch = r.choice(C_CAT_BRANCH, true, CATS);
@@ -283,7 +283,7 @@ public class DataExcelParser {
     
     private static String[] choiceWithOther(RowReader r, int selCol, int otherCol,
                                             Map<String, String> allowed) {
-    	System.out.println("DEBUG row dropdown=[" + r.raw(selCol) + "] ifOther=[" + r.raw(otherCol) + "]");
+//    	System.out.println("DEBUG row dropdown=[" + r.raw(selCol) + "] ifOther=[" + r.raw(otherCol) + "]");
 
         String canonicalOther = allowed.getOrDefault(normalize("Other"), "Other");
 
@@ -388,7 +388,7 @@ public class DataExcelParser {
             String s = raw(c);
             if (s == null) {
                 if (required) {
-                    error(c, "is required [v2]");
+                    error(c, "is required");
                 }
                 return null;
             }

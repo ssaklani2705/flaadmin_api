@@ -46,7 +46,7 @@ public class DataController {
 			return ResponseEntity.ok(dataService.uploadDataExcel(file, addedBy, bankId, httpRequest));
 
 		} catch (IllegalArgumentException e) {
-			System.out.println("Excel upload rejected: {}" + e.getMessage());
+//			System.out.println("Excel upload rejected: {}" + e.getMessage());
 			Map<String, Object> body = new LinkedHashMap<>();
 			body.put("success", false);
 			body.put("message", e.getMessage());

@@ -56,7 +56,7 @@ public class AuthBankService {
 	@Value("${ipflag:}")
 	private String ipFlag;
 
-	@Value("${paths:}")
+	@Value("${paths_flauser:}")
 	private String paths;
 	
 	@Value("${file_maillog:}")

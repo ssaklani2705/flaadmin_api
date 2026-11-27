@@ -60,7 +60,7 @@ public interface BankUserRepo extends JpaRepository<BankUserEntity, Integer> {
 
 	@Query("SELECT new com.webelement.esgadminportal.common.UserInfoDTO(u.bankUserId, u.name, u.contactNo, u.email, u.status, b.name as bankName) "
 			+ "FROM BankUserEntity u LEFT JOIN BankEntity b ON u.bankId = b.bankId "
-			+ "WHERE u.bankId = :bankId AND u.status <> 3 ORDER BY u.status, u.name")
+			+ "WHERE u.bankId = :bankId  ORDER BY u.status, u.name")
 	List<UserInfoDTO> findUsersByBankId(@Param("bankId") int bankId);
 	
 	//for Bank updateForgotPassword

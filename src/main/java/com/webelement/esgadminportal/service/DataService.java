@@ -300,9 +300,9 @@ public class DataService {
 public Map<String, Object> uploadDataExcel(MultipartFile file, Integer addedBy, Integer bankId,
                                            HttpServletRequest httpRequest) {
 	
-	System.out.println("UPLOAD HIT v2");
-	System.out.println("PARSER LOADED FROM: "
-	        + DataExcelParser.class.getProtectionDomain().getCodeSource().getLocation());
+//	System.out.println("UPLOAD HIT v2");
+//	System.out.println("PARSER LOADED FROM: "
+//	        + DataExcelParser.class.getProtectionDomain().getCodeSource().getLocation());
 
     if (file == null || file.isEmpty()) {
         throw new IllegalArgumentException("Please select an Excel file");

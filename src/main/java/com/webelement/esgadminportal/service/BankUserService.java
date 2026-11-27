@@ -65,12 +65,12 @@ public class BankUserService {
 	public UserInfoDTO getUserById(int bankUserId) {
 		UserInfoDTO user = bankUserRepo.getBankUserById(bankUserId);
 
-		if (user != null) {
-			// Append transaction history
-			List<TransactionEntity> history = getTransactionLogs(2, bankUserId);
-			System.out.println("history : " + history);
-			user.setTransactionhistory(history);
-		}
+//		if (user != null) {
+//			// Append transaction history
+//			List<TransactionEntity> history = getTransactionLogs(2, bankUserId);
+//			System.out.println("history : " + history);
+//			user.setTransactionhistory(history);
+//		}
 
 		return user;
 	}

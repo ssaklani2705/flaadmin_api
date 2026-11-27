@@ -247,7 +247,7 @@ System.out.println("serverCaptcha : "+serverCaptcha);
 			String cc[] = new String[0];
 			String bcc[] = new String[0];
 			String subject = "";
-			subject = "IBAESG :: Forgot Password";
+			subject = "FLA :: Forgot Password";
 			SmtpEntity findLatestSmtpDetail = smtpRepo.findLatestSmtpDetails();
 
 			ccv = mailService.postMailAttach(to, cc, bcc, mailBody, subject, "", "", -1, "", findLatestSmtpDetail);
